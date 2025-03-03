@@ -46,6 +46,8 @@ export default class DynamicBackgroundPlugin extends Plugin {
 				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect);
 			}
 		});
+		// When user opens new file we will 
+		this.app.workspace.on('file-open')
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		//this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
@@ -66,7 +68,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 	}
 
 	AddDynamicBackgroundContainer(){
-  	let div_root = app.workspace.containerEl.find("div.workspace > div.mod-root");
+  	let div_root = this.app.workspace.containerEl.find("div.workspace > div.mod-root");
 		
 		this.dynamicBackgroundContainer = null;
 
@@ -76,7 +78,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			this.wallpaperCover = this.dynamicBackgroundContainer.createEl("div", { cls: "rh-wallpaper-cover" });
 
 			this.SetWallpaperBlur();
-  	}
+  		}
 	}
 
 	SetWallpaperBlur(){
