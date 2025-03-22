@@ -24,6 +24,8 @@ import { DynamicBackgroundPluginSettings } from 'common';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import Sortable from "sortablejs"
+
 
 const DEFAULT_SETTINGS: DynamicBackgroundPluginSettings = {
 	dynamicEffect: DynamicEffectEnum.Dark_StarSky,
@@ -443,7 +445,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 								"backgroundPath": backgroundPath
 							})
 							new Notice("Note background saved successfully")
-							console.log(this.plugin.settings.notesBackgroundMap)
 							await this.plugin.saveSettings()
 							this.plugin.saveData(this.plugin.settings)
 							this.display()
@@ -453,9 +454,62 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 							new Notice("No background path has been added")
 						}
 					})
-
 			})
 
 			
+const pathsContainer = containerEl.createEl("div", {
+			cls: "paths-container"
+		})
+
+		Sortable.create(pathsContainer, {
+			animation: 500,
+			ghostClass: "container-sortable-ghost",
+			chosenClass: "container-sortable-chosen",
+			dragClass: "container-sortable-drag",
+			dragoverBubble: true,
+			forceFallback: true,
+			fallbackClass: "container-sortable-fallback",
+			easing: "cubic-bezier(1, 0, 0, 1)",
+			onSort: (command: { oldIndex: number; newIndex: number }) => {
+				const arrayResult = this.plugin.settings.notesBackgroundMap;
+				const [removed] = arrayResult.splice(command.oldIndex, 1);
+				arrayResult.splice(command.newIndex, 0, removed);
+				this.plugin.settings.notesBackgroundMap = arrayResult;
+				this.plugin.saveSettings();
+			}
+		})
+		
+		this.plugin.settings.notesBackgroundMap.forEach((notePath) => {
+			const icon = `<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" /></svg>`
+			const settingItem = pathsContainer.createEl("div");
+			settingItem.addClass("container-item-draggable");
+			const colorIcon = settingItem.createEl("span");
+			colorIcon.addClass("container-setting-icon");
+			colorIcon.innerHTML = icon;
+
+			new Setting(settingItem)
+				.setClass("container-setting-item")
+				.setName(notePath.notePath)
+				.setDesc("Background: " + notePath.backgroundPath + " | Effect: " + notePath.dynamicEffect)
+				.addButton((button) => {
+					button
+					.setClass("HighlightrSettingsButton")
+					.setClass("HighlightrSettingsButtonDelete")
+					.setIcon("highlightr-delete")
+					.setTooltip("Remove")
+					/*.onClick(async () => {
+					new Notice(`${notePath} assigned background deleted`);
+					(this.app as any).commands.removeCommand(
+						`highlightr-plugin:${highlighter}`
+					);
+					delete this.plugin.settings.highlighters[highlighter];
+					this.plugin.settings.highlighterOrder.remove(highlighter);
+					setTimeout(() => {
+						dispatchEvent(new Event("Highlightr-NewCommand"));
+					}, 100);
+					await this.plugin.saveSettings();
+					this.display();*/
+            	}); 
+		});
 	}
 }
