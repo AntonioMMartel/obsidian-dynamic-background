@@ -217,3 +217,23 @@ div.odb-lt-wave-effect div.ocean{
       height:90%;
     }
 }
+
+
+.path-input-settings {
+    width: 42%;
+    color: var(--text-normal);
+}
+
+.setting-item-control:has(.path-input-settings) {
+  justify-content: space-between;
+  margin-top: 12px;
+  align-content: center;
+}
+.note-background-settings {
+    display: block;
+    justify-content: space-between;
+    margin-top: 12px;
+    align-content: center;
+    align-items: flex-end;
+    grid-gap: 6px;
+}

@@ -9,6 +9,7 @@ export enum DynamicEffectEnum {
 	Light_Wave = 41,
 	
 	Unknown = -1,
+	None = -1
 }
 
 export interface DynamicBackgroundPluginSettings {
@@ -17,4 +18,5 @@ export interface DynamicBackgroundPluginSettings {
 	enableDynamicEffect: boolean;
 	backgroundImageFile: string;
 	blur:number;
+	notesBackgroundMap: {notePath: string, dynamicEffect: string, backgroundPath: string}[]
 }

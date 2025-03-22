@@ -1,4 +1,17 @@
-import { App, Modal, Plugin, PluginSettingTab, Setting, FileSystemAdapter, normalizePath } from 'obsidian';
+import { 
+	App, 
+	Modal, 
+	Plugin, 
+	PluginSettingTab, 
+	Setting, 
+	FileSystemAdapter, 
+	normalizePath, 
+	TextComponent, 
+	DropdownComponent, 
+	IconName,
+	addIcon,
+	Notice 
+} from 'obsidian';
 import { Add_StarSky, Remove_StarSky} from 'effects/dark-dynamic-star-sky';
 import { Add_Snow, Remove_Snow, DarkTheme_Snow_Background_Property} from 'effects/dark-dynamic-snow';
 import { Add_Rain, Remove_Rain, DarkTheme_Rain_Background_Property} from 'effects/dark-dynamic-rain';
@@ -11,12 +24,14 @@ import { DynamicBackgroundPluginSettings } from 'common';
 import * as fs from 'fs';
 import * as path from 'path';
 
+
 const DEFAULT_SETTINGS: DynamicBackgroundPluginSettings = {
 	dynamicEffect: DynamicEffectEnum.Dark_StarSky,
 	digitalRainBrightness: 0.7,
 	enableDynamicEffect: true,
 	backgroundImageFile:"",
-	blur:0
+	blur:0,
+	notesBackgroundMap: []
 } 
 
 export default class DynamicBackgroundPlugin extends Plugin {
@@ -28,26 +43,29 @@ export default class DynamicBackgroundPlugin extends Plugin {
 	
 	async onload() {
 		console.log("loading dynamic background plugin...");
-
 		this.preDynamicEffect = DynamicEffectEnum.Unknown;
-		
-
 		await this.loadSettings();
-
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new DynamicBackgroundSettingTab(this.app, this));
-
+		// Layout
 		this.app.workspace.onLayoutReady(() => {
 			this.AddDynamicBackgroundContainer();
-
 			this.SetDynamicBackgroundContainerBgProperty();
-
 			if(this.settings.enableDynamicEffect == true){
 				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect);
+				this.preDynamicEffect = this.settings.dynamicEffect
+				//this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
+				//this.AddDynamicBackgroundEffect(DynamicEffectEnum.Dark_DigitalRain)
 			}
 		});
-		// When user opens new file we will 
-		this.app.workspace.on('file-open')
+
+		// File open
+		this.app.workspace.on('file-open', () => {
+			const file = this.app.workspace.getActiveFile()
+			if(file){
+				this.setFileBackground(file)
+			}
+		})
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		//this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
@@ -58,6 +76,16 @@ export default class DynamicBackgroundPlugin extends Plugin {
 
 		this.RemoveDynamicBackgroundContainer();
 	}
+
+	async setFileBackground(file: Object) {
+		// If file has backgroung in config
+
+		// set background
+
+		// Else use default background
+
+	}
+
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
@@ -257,40 +285,45 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 	display(): void {
 		const {containerEl} = this;
-
+		
 		containerEl.empty();
 
 		containerEl.createEl('h2', {text: 'Dynamic Background Plugin - Settings'});
 
+		let defaultDynamicEffects = 
+			{
+				[DynamicEffectEnum.Dark_DigitalRain.toString()]: "Dark - Matrix / Digital Rain",
+				[DynamicEffectEnum.Dark_Rain.toString()] : "Dark - Rain", 
+				[DynamicEffectEnum.Dark_RandomCircle.toString()]: "Dark - Random Circle",
+				[DynamicEffectEnum.Dark_Snow.toString()]: "Dark - Snow",
+				[DynamicEffectEnum.Dark_StarSky.toString()]:"Dark - Star Sky",
+				[DynamicEffectEnum.Light_RandomCircle.toString()]: "Light - Random Circle",
+				[DynamicEffectEnum.Light_Wave.toString()]: "Light - Wave"
+			}
+
 		new Setting(containerEl)
-			.setName('Dynamic Effect')
-			.setDesc('Select a dynamic effect')
-			.addDropdown((dropdown) =>
-        dropdown
-					.addOption(DynamicEffectEnum.Dark_DigitalRain.toString(), "Dark - Matrix / Digital Rain")
-					.addOption(DynamicEffectEnum.Dark_Rain.toString(), "Dark - Rain")
-					.addOption(DynamicEffectEnum.Dark_RandomCircle.toString(), "Dark - Random Circle")
-					.addOption(DynamicEffectEnum.Dark_Snow.toString(), "Dark - Snow")
-					.addOption(DynamicEffectEnum.Dark_StarSky.toString(), "Dark - Star Sky")
-					.addOption(DynamicEffectEnum.Light_RandomCircle.toString(), "Light - Random Circle")
-					.addOption(DynamicEffectEnum.Light_Wave.toString(), "Light - Wave")
-					.setValue(this.plugin.settings.dynamicEffect.toString())
-          .onChange(async (value) => {
-						this.plugin.preDynamicEffect = this.plugin.settings.dynamicEffect;
-            this.plugin.settings.dynamicEffect = Number(value);
-            
-						await this.plugin.saveSettings();
+			.setName('Default dynamic Effect')
+			.setDesc('Select a default dynamic effect')
+			.addDropdown((dropdown) => dropdown
+				.addOptions(defaultDynamicEffects)
+				//.addOptions(userAddedDynamicBackgrounds)	
+				.setValue(this.plugin.settings.dynamicEffect.toString())
+         		.onChange(async (value) => {
+					this.plugin.preDynamicEffect = this.plugin.settings.dynamicEffect;
+					this.plugin.settings.dynamicEffect = Number(value);
+				
+					await this.plugin.saveSettings();
 
-						this.plugin.RemoveDynamicBackgroundEffect(this.plugin.preDynamicEffect);
+					this.plugin.RemoveDynamicBackgroundEffect(this.plugin.preDynamicEffect);
 
-						if (this.plugin.settings.enableDynamicEffect == true)
-							this.plugin.AddDynamicBackgroundEffect(this.plugin.settings.dynamicEffect);
+					if (this.plugin.settings.enableDynamicEffect == true)
+						this.plugin.AddDynamicBackgroundEffect(this.plugin.settings.dynamicEffect);
 
-						this.plugin.SetDynamicBackgroundContainerBgProperty();
+					this.plugin.SetDynamicBackgroundContainerBgProperty();
 
-						this.display();
-          })
-      );	
+					this.display();
+          		})
+			);	
 
 		if (this.plugin.settings.dynamicEffect == DynamicEffectEnum.Dark_DigitalRain)
 		{
@@ -329,27 +362,24 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				})
 			);				
 
-			new Setting(containerEl)
+		new Setting(containerEl)
 			.setName('Static Wallpaper Image')
 			.setDesc("Image file in Vault. Please use the relative path of the image file inside Vault.")
-			.addTextArea((text) =>
-        text
-					.setValue(this.plugin.settings.backgroundImageFile)
-          .setPlaceholder("Example: attachments/moon.jpg or wallpapers/green.png" )
-					.then((cb) => {
-						cb.inputEl.style.width = "100%";
-						cb.inputEl.rows = 5;
-					})
-          .onChange(async (value) => {
-            this.plugin.settings.backgroundImageFile = value;
+			.addTextArea((text) => text
+				.setValue(this.plugin.settings.backgroundImageFile)
+          		.setPlaceholder("Example: attachments/moon.jpg or wallpapers/green.png" )
+				.then((cb) => {
+					cb.inputEl.style.width = "100%";
+					cb.inputEl.rows = 5;
+				})
+         	.onChange(async (value) => {
+            	this.plugin.settings.backgroundImageFile = value;
+				await this.plugin.saveSettings();
+				this.plugin.SetDynamicBackgroundContainerBgProperty();
+			})
+      	);
 
-						await this.plugin.saveSettings();
-
-						this.plugin.SetDynamicBackgroundContainerBgProperty();
-					})
-      );
-
-			new Setting(containerEl)
+		new Setting(containerEl)
 			.setName('Blur')
 			.setDesc('The blurriness of the wallpaper, 0 means no blur.')
 			.addSlider(tc => {
@@ -358,11 +388,74 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.blur)
 					.onChange(async value => {
 						this.plugin.settings.blur = value;
-
 						await this.plugin.saveSettings();
-
 						this.plugin.SetWallpaperBlur();
 					});
 			});	
+
+		const noteBackgroundSetting = new Setting(containerEl)
+
+		noteBackgroundSetting
+			.setName('Add dynamic effect to note')
+			.setDesc('Set specific dynamic effect for notes in specific path')
+			.setClass("note-background-settings")
+
+		const pathInput = new TextComponent(noteBackgroundSetting.controlEl)
+		pathInput
+			.setPlaceholder("Path to note")
+			.inputEl.addClass("path-input-settings")
+
+		
+		let selectedDynamicEffect:string = DynamicEffectEnum.None.toString()
+		const backgroundDropdown = new DropdownComponent(noteBackgroundSetting.controlEl)
+		backgroundDropdown
+			.addOptions({[DynamicEffectEnum.None.toString()]: "None"})
+			.addOptions(defaultDynamicEffects)
+			//.addOptions(userAddedDynamicBackgrounds)
+			.setValue(selectedDynamicEffect)
+			.onChange((value) => {
+				selectedDynamicEffect = value
+			})
+
+		const imageInput = new TextComponent(noteBackgroundSetting.controlEl)
+		imageInput
+			.setPlaceholder("Path to background image")
+			.inputEl.addClass("path-input-settings")
+
+
+
+		addIcon("save-icon",'<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="#ffffff"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>')
+		noteBackgroundSetting
+			.addButton((button) => {
+				button
+					.setClass("background-save-button")
+					.setIcon("save-icon")
+					.setTooltip("Save")
+					.onClick(async (buttonEl : any) => {
+						let notePath = pathInput.inputEl.value
+						let dynamicEffect = backgroundDropdown.getValue()
+						let backgroundPath = imageInput.inputEl.value
+
+						if (notePath && backgroundPath && dynamicEffect) {
+							this.plugin.settings.notesBackgroundMap.push({
+								"notePath": notePath,
+								"dynamicEffect": dynamicEffect,
+								"backgroundPath": backgroundPath
+							})
+							new Notice("Note background saved successfully")
+							console.log(this.plugin.settings.notesBackgroundMap)
+							await this.plugin.saveSettings()
+							this.plugin.saveData(this.plugin.settings)
+							this.display()
+						} else if(!notePath) {
+							new Notice("No note path has been added")
+						} else if(!backgroundPath) {
+							new Notice("No background path has been added")
+						}
+					})
+
+			})
+
+			
 	}
 }
