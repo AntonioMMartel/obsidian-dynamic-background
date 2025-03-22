@@ -437,9 +437,11 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						let notePath = pathInput.inputEl.value
 						let dynamicEffect = backgroundDropdown.getValue()
 						let backgroundPath = imageInput.inputEl.value
+						let date = new Date
 
 						if (notePath && backgroundPath && dynamicEffect) {
 							this.plugin.settings.notesBackgroundMap.push({
+								"index": date.getTime(),
 								"notePath": notePath,
 								"dynamicEffect": dynamicEffect,
 								"backgroundPath": backgroundPath
@@ -457,7 +459,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			})
 
 			
-const pathsContainer = containerEl.createEl("div", {
+		const pathsContainer = containerEl.createEl("div", {
 			cls: "paths-container"
 		})
 
@@ -515,19 +517,13 @@ const pathsContainer = containerEl.createEl("div", {
 					.setClass("delete-settings-button")
 					.setIcon("delete-icon")
 					.setTooltip("Remove")
-					/*.onClick(async () => {
-					new Notice(`${notePath} assigned background deleted`);
-					(this.app as any).commands.removeCommand(
-						`highlightr-plugin:${highlighter}`
-					);
-					delete this.plugin.settings.highlighters[highlighter];
-					this.plugin.settings.highlighterOrder.remove(highlighter);
-					setTimeout(() => {
-						dispatchEvent(new Event("Highlightr-NewCommand"));
-					}, 100);
-					await this.plugin.saveSettings();
-					this.display();*/
-            	}); 
+					.onClick(async () => {
+						new Notice(`Note background deleted`);
+						this.plugin.settings.notesBackgroundMap.remove(notePath);
+						await this.plugin.saveSettings();
+						this.display();
+            		}); 
+				})
 		});
 	}
 }
