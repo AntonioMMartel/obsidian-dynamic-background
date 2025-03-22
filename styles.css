@@ -291,3 +291,19 @@ div.odb-lt-wave-effect div.ocean{
   box-shadow: 0px 3px 32px rgb(31 38 135 / 15%);
 }
 
+button.settings-button {
+  padding: 4px 14px;
+}
+
+button.settings-button svg {
+  width: 1.3em;
+}
+
+button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button {
+  background-color: #bd2130;
+}
+
+button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:hover {
+  background-color: #bf3745;
+}
+

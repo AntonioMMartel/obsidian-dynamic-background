@@ -480,22 +480,40 @@ const pathsContainer = containerEl.createEl("div", {
 		})
 		
 		this.plugin.settings.notesBackgroundMap.forEach((notePath) => {
-			const icon = `<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" /></svg>`
 			const settingItem = pathsContainer.createEl("div");
 			settingItem.addClass("container-item-draggable");
-			const colorIcon = settingItem.createEl("span");
-			colorIcon.addClass("container-setting-icon");
-			colorIcon.innerHTML = icon;
+			const settingIcon = settingItem.createEl("span");
+			settingIcon.addClass("container-setting-icon");
 
+			const vaultPath = (this.app.vault.adapter as any).basePath
+
+			
+			if(fs.existsSync(vaultPath + "/" + notePath.notePath) && fs.lstatSync(vaultPath + "/" + notePath.notePath).isDirectory()) {
+				// Folder
+				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>` 
+				console.log("Folder")
+			} else if (fs.existsSync(vaultPath + "/" + notePath.notePath + ".md") && fs.lstatSync(vaultPath + "/" + notePath.notePath + ".md").isFile()) {
+				// File
+				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /></svg>`	
+				console.log("File")
+			} else {
+				//Not found
+				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>`
+				console.log("None")
+			}
+			
+
+			addIcon("delete-icon",`<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>`)
+			
 			new Setting(settingItem)
 				.setClass("container-setting-item")
 				.setName(notePath.notePath)
 				.setDesc("Background: " + notePath.backgroundPath + " | Effect: " + notePath.dynamicEffect)
 				.addButton((button) => {
 					button
-					.setClass("HighlightrSettingsButton")
-					.setClass("HighlightrSettingsButtonDelete")
-					.setIcon("highlightr-delete")
+					.setClass("settings-button")
+					.setClass("delete-settings-button")
+					.setIcon("delete-icon")
 					.setTooltip("Remove")
 					/*.onClick(async () => {
 					new Notice(`${notePath} assigned background deleted`);
