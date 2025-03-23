@@ -83,7 +83,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 
 	async setFileBackground(file: TFile) {
 		this.settings.notesBackgroundMap.forEach((notePath) => {
-			if(file.path.contains(notePath.notePath)) {
+			if(file.path.contains(notePath.notePath) || file.path == notePath.notePath) {
 				if(!(notePath.backgroundPath == "")){
 					this.SetDynamicBackgroundContainerBgProperty(notePath.backgroundPath)
 				}
@@ -474,7 +474,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			text: "Playcss - Background blend mode",
 			href: "https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode",
 		});
-		console.log(this.plugin.settings.backgroundBlendMode)
 			
 		new Setting(containerEl)
 			.setName('Background Blending Mode')
@@ -499,6 +498,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					"color": "Color",
 					"luminosity": "Luminosity"
 				})
+				.setValue(this.plugin.settings.backgroundBlendMode)
 				.onChange(async (value) => {
 					this.plugin.settings.backgroundBlendMode = value;
 					console.log(this.plugin.settings.backgroundBlendMode)
@@ -602,15 +602,12 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			if(fs.existsSync(vaultPath + "/" + notePath.notePath) && fs.lstatSync(vaultPath + "/" + notePath.notePath).isDirectory()) {
 				// Folder
 				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>` 
-				console.log("Folder")
 			} else if (fs.existsSync(vaultPath + "/" + notePath.notePath) && fs.lstatSync(vaultPath + "/" + notePath.notePath).isFile()) {
 				// File
 				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /></svg>`	
-				console.log("File")
 			} else {
 				//Not found
 				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>`
-				console.log("None")
 			}
 			
 
