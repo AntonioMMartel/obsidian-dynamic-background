@@ -10,7 +10,8 @@ import {
 	DropdownComponent, 
 	IconName,
 	addIcon,
-	Notice 
+	Notice,
+	TFile
 } from 'obsidian';
 import { Add_StarSky, Remove_StarSky} from 'effects/dark-dynamic-star-sky';
 import { Add_Snow, Remove_Snow, DarkTheme_Snow_Background_Property} from 'effects/dark-dynamic-snow';
@@ -56,8 +57,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			if(this.settings.enableDynamicEffect == true){
 				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect);
 				this.preDynamicEffect = this.settings.dynamicEffect
-				//this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
-				//this.AddDynamicBackgroundEffect(DynamicEffectEnum.Dark_DigitalRain)
+				
 			}
 		});
 
@@ -79,12 +79,20 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		this.RemoveDynamicBackgroundContainer();
 	}
 
-	async setFileBackground(file: Object) {
-		// If file has backgroung in config
-
-		// set background
-
-		// Else use default background
+	async setFileBackground(file: TFile) {
+		this.settings.notesBackgroundMap.forEach((notePath) => {
+			// Find file in settings
+			if(notePath.notePath == file.path) {
+				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
+				this.AddDynamicBackgroundEffect(Number(notePath.dynamicEffect))
+				this.preDynamicEffect = Number(notePath.dynamicEffect)
+				return
+			} else {
+				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
+				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
+				this.preDynamicEffect = this.settings.dynamicEffect
+			}
+		})
 
 	}
 
@@ -437,11 +445,9 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						let notePath = pathInput.inputEl.value
 						let dynamicEffect = backgroundDropdown.getValue()
 						let backgroundPath = imageInput.inputEl.value
-						let date = new Date
 
 						if (notePath && backgroundPath && dynamicEffect) {
 							this.plugin.settings.notesBackgroundMap.push({
-								"index": date.getTime(),
 								"notePath": notePath,
 								"dynamicEffect": dynamicEffect,
 								"backgroundPath": backgroundPath
@@ -510,7 +516,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			new Setting(settingItem)
 				.setClass("container-setting-item")
 				.setName(notePath.notePath)
-				.setDesc("Background: " + notePath.backgroundPath + " | Effect: " + notePath.dynamicEffect)
+				.setDesc("Background: " + notePath.backgroundPath + " | Effect: " + defaultDynamicEffects[notePath.dynamicEffect])
 				.addButton((button) => {
 					button
 					.setClass("settings-button")
