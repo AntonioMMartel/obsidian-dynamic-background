@@ -83,7 +83,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 
 	async setFileBackground(file: TFile) {
 		this.settings.notesBackgroundMap.forEach((notePath) => {
-			if(notePath.notePath == file.path) {
+			if(file.path.contains(notePath.notePath)) {
 				if(!(notePath.backgroundPath == "")){
 					this.SetDynamicBackgroundContainerBgProperty(notePath.backgroundPath)
 				}
@@ -326,6 +326,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 		let defaultDynamicEffects = 
 			{
+				[DynamicEffectEnum.None.toString()]: "None",
 				[DynamicEffectEnum.Dark_DigitalRain.toString()]: "Dark - Matrix / Digital Rain",
 				[DynamicEffectEnum.Dark_Rain.toString()] : "Dark - Rain", 
 				[DynamicEffectEnum.Dark_RandomCircle.toString()]: "Dark - Random Circle",
@@ -467,26 +468,45 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				})
 			);
 
+		const mec = new DocumentFragment()
+		mec.appendText("Check the multiple modes here: ")
+		mec.createEl("a", {
+			text: "Playcss - Background blend mode",
+			href: "https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode",
+		});
+		console.log(this.plugin.settings.backgroundBlendMode)
+			
 		new Setting(containerEl)
 			.setName('Background Blending Mode')
-			.setDesc("Allowed value: normal, multiply, screen, overlay, darken, lighten, color-dodge, color-burn, hard-light, soft-light, difference, exclusion, hue, saturation, color, luminosity.")
-			.addTextArea((text) =>
-				text
-				.setValue(this.plugin.settings.backgroundBlendMode)
-				.then((cb) => {
-					cb.inputEl.style.width = "100%";
-					cb.inputEl.rows = 1;
+			.setDesc(mec)
+			.addDropdown((dropdown) => 
+			dropdown
+				.addOptions({
+					"normal": "Normal",
+					"multiply": "Multiply",
+					"screen": "Screen",
+					"overlay": "Overlay",
+					"darken": "Darken",
+					"lighten": "Lighten",
+					"color-dodge": "Color Dodge",
+					"color-burn": "Color Burn",
+					"hard-light": "Hard Light",
+					"soft-light": "Soft Light",
+					"difference": "Difference",
+					"exclusion": "Exclusion",
+					"hue":"Hue",
+					"saturation": "Saturation",
+					"color": "Color",
+					"luminosity": "Luminosity"
 				})
 				.onChange(async (value) => {
 					this.plugin.settings.backgroundBlendMode = value;
-
+					console.log(this.plugin.settings.backgroundBlendMode)
 					await this.plugin.saveSettings();
-
 					this.plugin.updateWallpaperStyles();
 				})
-			);
-		
-
+			)
+	
 		const noteBackgroundSetting = new Setting(containerEl)
 
 		noteBackgroundSetting
@@ -503,7 +523,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		let selectedDynamicEffect:string = DynamicEffectEnum.None.toString()
 		const backgroundDropdown = new DropdownComponent(noteBackgroundSetting.controlEl)
 		backgroundDropdown
-			.addOptions({[DynamicEffectEnum.None.toString()]: "None"})
 			.addOptions(defaultDynamicEffects)
 			//.addOptions(userAddedDynamicBackgrounds)
 			.setValue(selectedDynamicEffect)
