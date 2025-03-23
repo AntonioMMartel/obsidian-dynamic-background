@@ -64,10 +64,10 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		});
 
 		// File open
-		this.app.workspace.on('file-open', () => {
+		this.app.workspace.on('file-open', async () => {
 			const file = this.app.workspace.getActiveFile()
 			if(file){
-				this.setFileBackground(file)
+				await this.setFileBackground(file)
 			}
 		})
 
@@ -77,11 +77,11 @@ export default class DynamicBackgroundPlugin extends Plugin {
 
 	onunload() {
 		console.log("unloading dynamic background plugin...");
-
 		this.RemoveDynamicBackgroundContainer();
 	}
 
 	async setFileBackground(file: TFile) {
+		let hola: Boolean = true
 		this.settings.notesBackgroundMap.forEach((notePath) => {
 			if(file.path.contains(notePath.notePath) || file.path == notePath.notePath) {
 				if(!(notePath.backgroundPath == "")){
@@ -90,14 +90,18 @@ export default class DynamicBackgroundPlugin extends Plugin {
 				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
 				this.AddDynamicBackgroundEffect(Number(notePath.dynamicEffect))
 				this.preDynamicEffect = Number(notePath.dynamicEffect)
-				return
-			} else {
-				this.SetDynamicBackgroundContainerBgProperty()
-				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
-				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
-				this.preDynamicEffect = this.settings.dynamicEffect
+				hola = false
+				return;
 			}
 		})
+		// Default
+		if(hola) {
+			this.SetDynamicBackgroundContainerBgProperty()
+			this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
+			this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
+			this.preDynamicEffect = this.settings.dynamicEffect
+		}
+
 
 	}
 
@@ -501,7 +505,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.backgroundBlendMode)
 				.onChange(async (value) => {
 					this.plugin.settings.backgroundBlendMode = value;
-					console.log(this.plugin.settings.backgroundBlendMode)
 					await this.plugin.saveSettings();
 					this.plugin.updateWallpaperStyles();
 				})
