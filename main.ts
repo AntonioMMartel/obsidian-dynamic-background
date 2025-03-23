@@ -40,7 +40,7 @@ const DEFAULT_SETTINGS: DynamicBackgroundPluginSettings = {
 export default class DynamicBackgroundPlugin extends Plugin {
 	settings: DynamicBackgroundPluginSettings;
 	preDynamicEffect: DynamicEffectEnum;
-	preBackgroudImageFile: boolean;
+	preBackgroudImageFile: string;
 	dynamicBackgroundContainer: HTMLDivElement|null;
 	wallpaperCover: HTMLDivElement;
 	
@@ -57,7 +57,6 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			if(this.settings.enableDynamicEffect == true){
 				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect);
 				this.preDynamicEffect = this.settings.dynamicEffect
-				
 			}
 		});
 
@@ -81,13 +80,16 @@ export default class DynamicBackgroundPlugin extends Plugin {
 
 	async setFileBackground(file: TFile) {
 		this.settings.notesBackgroundMap.forEach((notePath) => {
-			// Find file in settings
 			if(notePath.notePath == file.path) {
+				if(!(notePath.backgroundPath == "")){
+					this.SetDynamicBackgroundContainerBgProperty(notePath.backgroundPath)
+				}
 				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
 				this.AddDynamicBackgroundEffect(Number(notePath.dynamicEffect))
 				this.preDynamicEffect = Number(notePath.dynamicEffect)
 				return
 			} else {
+				this.SetDynamicBackgroundContainerBgProperty()
 				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
 				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
 				this.preDynamicEffect = this.settings.dynamicEffect
@@ -132,15 +134,17 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		}
 	}
 
-	async SetDynamicBackgroundContainerBgProperty(){
+
+
+
+	async SetDynamicBackgroundContainerBgProperty(imagePath = this.settings.backgroundImageFile){
 		if (this.dynamicBackgroundContainer == null)
 			return;
 
 		let backgroundImageAlreadySet = false;	
 		let imageFullFilename="";
-
 		try {
-            imageFullFilename = this.app.vault.adapter.getResourcePath(this.settings.backgroundImageFile)
+            imageFullFilename = this.app.vault.adapter.getResourcePath(imagePath)
 
         } catch(e) { }
 		
@@ -148,6 +152,8 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			this.dynamicBackgroundContainer.style.setProperty("background","url(\"" + imageFullFilename + "\"");
 			this.dynamicBackgroundContainer.style.setProperty("background-size","cover");
 			this.dynamicBackgroundContainer.style.setProperty("background-position","center");
+
+			this.preBackgroudImageFile = imagePath
 
 			backgroundImageAlreadySet = true;
 		}
