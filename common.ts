@@ -18,7 +18,15 @@ export interface DynamicBackgroundPluginSettings {
 	enableDynamicEffect: boolean;
 	backgroundImageFile: string;
 	blur:number;
-	notesBackgroundMap: {notePath: string, dynamicEffect: string, backgroundPath: string}[]
+	notesBackgroundMap: {
+		notePath: string, 
+		dynamicEffect: string, 
+		backgroundPath: string,
+		bgBlend: string,
+		colorHex: string,
+		bgBrightness: number,
+		bgBlur: number
+	}[]
 	brightness: number;
 	backgroundColor: string;
 	backgroundBlendMode: string

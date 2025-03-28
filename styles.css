@@ -241,14 +241,10 @@ div.odb-lt-wave-effect div.ocean{
 
 .paths-container {
     border-bottom: 1px solid var(--background-modifier-border);
+
 }
 
-.container-setting-icon {
-  display: flex;
-  height: 24px;
-  width: 24px;
-}
-
+/*
 .container-item-draggable {
   cursor: grab;
   display: grid;
@@ -257,12 +253,23 @@ div.odb-lt-wave-effect div.ocean{
   align-items: center;
   border-top: 1px solid var(--background-modifier-border);
 }
+*/
+.container-item-draggable {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 8px;
+    align-items: center;
+    border-top: 1px solid var(--background-modifier-border);
+    padding-top: 1em;
+    padding-bottom: 1em
+}
 
 .setting-item.container-setting-item:first-child {
   padding-top: 18px;
 }
 
-.container-setting-item {
+.container-setting-item{
   padding: 18px 0 18px 0;
   border-top: none;
 }
@@ -308,5 +315,35 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   background-color: #bf3745;
 }
 
+.setting-item-label {
+  font-size: 0.7em;
+  padding-bottom: 0.2em;
+  padding-left: 0.45em;
+  opacity: 0.5;
+}
 
+.setting-item-input {
+  width: 100%
+}
 
+.setting-item-icon {
+  grid-row: span 3 / span 3;
+  grid-column-start: 1;
+  grid-row-start: 1;
+  align-items: center;
+  width: 100%
+}
+
+.note-path-setting {
+  grid-column: span 4 / span 4;
+  grid-column-start: 2;
+  grid-row-start: 1;
+  align-items: center;
+}
+
+.background-path-setting {
+  grid-column: span 4 / span 4;
+  grid-column-start: 2;
+  grid-row-start: 2;
+  align-items: center;
+}

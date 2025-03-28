@@ -478,30 +478,32 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			text: "Playcss - Background blend mode",
 			href: "https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode",
 		});
-			
+		
+		const bgBlendingModeOptions = {
+			"normal": "Normal",
+			"multiply": "Multiply",
+			"screen": "Screen",
+			"overlay": "Overlay",
+			"darken": "Darken",
+			"lighten": "Lighten",
+			"color-dodge": "Color Dodge",
+			"color-burn": "Color Burn",
+			"hard-light": "Hard Light",
+			"soft-light": "Soft Light",
+			"difference": "Difference",
+			"exclusion": "Exclusion",
+			"hue":"Hue",
+			"saturation": "Saturation",
+			"color": "Color",
+			"luminosity": "Luminosity"
+		}
+
 		new Setting(containerEl)
 			.setName('Background Blending Mode')
 			.setDesc(mec)
 			.addDropdown((dropdown) => 
 			dropdown
-				.addOptions({
-					"normal": "Normal",
-					"multiply": "Multiply",
-					"screen": "Screen",
-					"overlay": "Overlay",
-					"darken": "Darken",
-					"lighten": "Lighten",
-					"color-dodge": "Color Dodge",
-					"color-burn": "Color Burn",
-					"hard-light": "Hard Light",
-					"soft-light": "Soft Light",
-					"difference": "Difference",
-					"exclusion": "Exclusion",
-					"hue":"Hue",
-					"saturation": "Saturation",
-					"color": "Color",
-					"luminosity": "Luminosity"
-				})
+				.addOptions(bgBlendingModeOptions)
 				.setValue(this.plugin.settings.backgroundBlendMode)
 				.onChange(async (value) => {
 					this.plugin.settings.backgroundBlendMode = value;
@@ -509,7 +511,11 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					this.plugin.updateWallpaperStyles();
 				})
 			)
-	
+		addIcon("save-icon",'<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="#ffffff"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>')
+		addIcon("new-icon", `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>`)
+
+
+		/*
 		const noteBackgroundSetting = new Setting(containerEl)
 
 		noteBackgroundSetting
@@ -541,6 +547,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 
 		addIcon("save-icon",'<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="#ffffff"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>')
+		addIcon("new-icon", `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>`)
 		noteBackgroundSetting
 			.addButton((button) => {
 				button
@@ -570,7 +577,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					})
 			})
 
-			
+		*/
 		const pathsContainer = containerEl.createEl("div", {
 			cls: "paths-container"
 		})
@@ -580,6 +587,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			ghostClass: "container-sortable-ghost",
 			chosenClass: "container-sortable-chosen",
 			dragClass: "container-sortable-drag",
+			draggable: ".draggable",
 			dragoverBubble: true,
 			forceFallback: true,
 			fallbackClass: "container-sortable-fallback",
@@ -592,34 +600,113 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				this.plugin.saveSettings();
 			}
 		})
+
 		
 		this.plugin.settings.notesBackgroundMap.forEach((notePath) => {
+			
 			const settingItem = pathsContainer.createEl("div");
 			settingItem.addClass("container-item-draggable");
-			const settingIcon = settingItem.createEl("span");
-			settingIcon.addClass("container-setting-icon");
 
+			// Icon
+			const settingIcon = settingItem.createEl("div");
+			settingIcon.addClass("setting-item-icon");
+	
 			const vaultPath = (this.app.vault.adapter as any).basePath
 
-			
 			if(fs.existsSync(vaultPath + "/" + notePath.notePath) && fs.lstatSync(vaultPath + "/" + notePath.notePath).isDirectory()) {
 				// Folder
 				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>` 
 			} else if (fs.existsSync(vaultPath + "/" + notePath.notePath) && fs.lstatSync(vaultPath + "/" + notePath.notePath).isFile()) {
 				// File
-				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /></svg>`	
+				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /></svg>`	
 			} else {
 				//Not found
 				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>`
 			}
 			
 
-			addIcon("delete-icon",`<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>`)
+
+			// Note path
+			const notePathSetting = settingItem.createEl("div")
+			notePathSetting.addClass("note-path-setting")
+
+			const notePathLabel = notePathSetting.createEl("div")
+			notePathLabel.addClass("setting-item-label")
+			notePathLabel.textContent = "Note path"
 			
+			const notePathSettingInput = notePathSetting.createEl("input")
+			notePathSettingInput.addClass("setting-item-input")
+			notePathSettingInput.placeholder = "Path to note"
+			notePathSettingInput.type = "text"
+			notePathSettingInput.value = notePath.notePath
+			
+			// dyn effect
+			const dynamicEffectSetting = settingItem.createEl("div")
+
+			const dynamicEffectLabel = dynamicEffectSetting.createEl("div")
+			dynamicEffectLabel.addClass("setting-item-label")
+			dynamicEffectLabel.textContent = "Dynamic effect"
+
+			const dynamicEffectDropdown = new DropdownComponent(dynamicEffectSetting)
+			dynamicEffectDropdown
+				.addOptions(defaultDynamicEffects)
+				//.addOptions(userAddedDynamicBackgrounds)	
+				.setValue(notePath.dynamicEffect)
+
+
+
+			// bg blend
+			const bgBlendSetting = settingItem.createEl("div")
+
+			const bgBlendLabel = bgBlendSetting.createEl("div")
+			bgBlendLabel.addClass("setting-item-label")
+			bgBlendLabel.textContent = "Background blend"
+
+			const bgBlendDropdown = new DropdownComponent(bgBlendSetting)
+			bgBlendDropdown
+				.addOptions(bgBlendingModeOptions)
+				//.addOptions(userAddedDynamicBackgrounds)	
+				.setValue(notePath.bgBlend)
+
+			// bg path
+			const backgroundPathSetting = settingItem.createEl("div")
+			backgroundPathSetting.addClass("background-path-setting")
+
+			const backgroundPathLabel = backgroundPathSetting.createEl("div")
+			backgroundPathLabel.addClass("setting-item-label")
+			backgroundPathLabel.textContent = "Background path"
+			
+			const backgroundPathSettingInput = backgroundPathSetting.createEl("input")
+			backgroundPathSettingInput.addClass("setting-item-input")
+			backgroundPathSettingInput.placeholder = "Path to background"
+			backgroundPathSettingInput.type = "text"
+			backgroundPathSettingInput.value = notePath.backgroundPath
+			// bg color hex
+			const backgroundColorSetting = settingItem.createEl("div")
+			//backgroundPathSetting.addClass("background-path-setting")
+
+			const backgroundColorLabel = backgroundColorSetting.createEl("div")
+			backgroundColorLabel.addClass("setting-item-label")
+			backgroundColorLabel.textContent = "Background Color"
+			
+			const backgroundColorSettingInput = backgroundColorSetting.createEl("input")
+			backgroundColorSettingInput.addClass("setting-item-input")
+			backgroundColorSettingInput.placeholder = "Background color"
+			backgroundColorSettingInput.type = "text"
+			backgroundColorSettingInput.value = "0xFKSJDEDF"
+			// bg color picker
+
+			// bg brightness + blur sliders
+
+			// buttons
+
+
+
+			addIcon("delete-icon",`<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>`)
+			/*
 			new Setting(settingItem)
 				.setClass("container-setting-item")
-				.setName(notePath.notePath)
-				.setDesc("Background: " + notePath.backgroundPath + " | Effect: " + defaultDynamicEffects[notePath.dynamicEffect])
+				//.setName(notePath.notePath)
 				.addButton((button) => {
 					button
 					.setClass("settings-button")
@@ -633,6 +720,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						this.display();
             		}); 
 				})
+					*/
 		});
 	}
 }
