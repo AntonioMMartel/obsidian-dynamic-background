@@ -94,7 +94,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 	}
 
 	async setFileBackground(file: TFile) {
-		let hola: Boolean = true
+		let backgroundChanged: Boolean = true
 		this.settings.notesBackgroundMap.forEach((notePath) => {
 			if(file.path.contains(notePath.notePath) || file.path == notePath.notePath) {
 				if(!(notePath.backgroundPath == "")){
@@ -103,12 +103,12 @@ export default class DynamicBackgroundPlugin extends Plugin {
 				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
 				this.AddDynamicBackgroundEffect(Number(notePath.dynamicEffect))
 				this.preDynamicEffect = Number(notePath.dynamicEffect)
-				hola = false
+				backgroundChanged = false
 				return;
 			}
 		})
 		// Default
-		if(hola) {
+		if(backgroundChanged) {
 			this.SetDynamicBackgroundContainerBgProperty()
 			this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
 			this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
@@ -492,17 +492,30 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.setDesc(
 				`Select the color using the color picker to set its hex code value`
 			);
-		const valueInput = new TextComponent(defaultBackgroundColorSetting.controlEl);
-    	valueInput.setPlaceholder("Color hex code");
-    	valueInput.inputEl.addClass("color-setting-value");
+		const backgroundColorInput = new TextComponent(defaultBackgroundColorSetting.controlEl);
+    	backgroundColorInput.inputEl.addClass("color-setting-value");
+		backgroundColorInput
+			.setPlaceholder("Color hex code")
+			.setValue(this.plugin.settings.backgroundColor)
+			.onChange((text) => {
+				backgroundColorInput.inputEl.setAttribute("value", text)
+				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${text}; color: var(--text-normal);`)
+			})
+			.then((input) =>{
+				backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
+				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+			})
+		
+
+		addIcon("save-icon",'<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="#ffffff"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>')
 
 		defaultBackgroundColorSetting
 			.addButton((button) => {
 				button.setClass("color-picker")
 			})
 			.then(() => {
-				let input = valueInput.inputEl
-				let currentColor = valueInput.inputEl.value || null
+				let input = backgroundColorInput.inputEl
+				let currentColor = backgroundColorInput.inputEl.value || null
 				let colorMap = this.plugin.settings.colorMap
 
 				let colorHex;
@@ -530,7 +543,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						},
 					},
 				})
-
 				pickrCreate
 				.on("clear", function (instance: Pickr) {
 					instance.hide()
@@ -568,7 +580,19 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					instance.hide();
 					instance.addSwatch(color.toHEXA().toString());
 				});
-
+			})
+			.addButton((button) => {
+				button
+					.setClass("background-save-button")
+					.setIcon("save-icon")
+					.setTooltip("Save")
+					.onClick(async (buttonEl : any) => {						
+						await this.plugin.saveSettings()
+						this.plugin.settings.backgroundColor = backgroundColorInput.inputEl.value
+						this.plugin.saveData(this.plugin.settings)
+						this.plugin.updateWallpaperStyles();
+						new Notice("Default color set and saved successfully")
+			})
 		})
 		
 		const bgBlendingModeOptions = {
@@ -610,7 +634,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					this.plugin.updateWallpaperStyles();
 				})
 			)
-		addIcon("save-icon",'<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="#ffffff"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>')
 		addIcon("new-icon", `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>`)
 
 
@@ -645,7 +668,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 
 
-		addIcon("save-icon",'<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="#ffffff"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>')
 		addIcon("new-icon", `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>`)
 		noteBackgroundSetting
 			.addButton((button) => {
