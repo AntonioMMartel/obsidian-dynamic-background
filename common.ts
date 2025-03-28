@@ -29,5 +29,6 @@ export interface DynamicBackgroundPluginSettings {
 	}[]
 	brightness: number;
 	backgroundColor: string;
-	backgroundBlendMode: string
+	backgroundBlendMode: string;
+	colorMap: string[]
 }

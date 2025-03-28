@@ -26,6 +26,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import Sortable from "sortablejs"
+import Pickr from '@simonwep/pickr';
 
 
 const DEFAULT_SETTINGS: DynamicBackgroundPluginSettings = {
@@ -37,7 +38,19 @@ const DEFAULT_SETTINGS: DynamicBackgroundPluginSettings = {
 	notesBackgroundMap: [],
 	brightness: 100,
 	backgroundColor: "",
-	backgroundBlendMode: ""
+	backgroundBlendMode: "",
+	colorMap: [
+		"#FFB8EBA6", // Pink
+		"#FF5582A6", // Red
+		"#FFB86CA6", // Orange
+		"#FFF3A3A6", // Yellow
+		"#BBFABBA6", // Green
+		"#ABF7F7A6", // Cyan
+		"#ADCCFFA6", // Blue
+		"#D2B3FFA6", // Purple
+		"#CACFD9A6", // Grey
+	]
+
 } 
 
 export default class DynamicBackgroundPlugin extends Plugin {
@@ -451,7 +464,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						this.plugin.updateWallpaperStyles();
 					});
 			});	
-
+/*
 		new Setting(containerEl)
 			.setName('Background Blending Color')
 			.setDesc("Background Blending Color in Hexcode.")
@@ -470,14 +483,93 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 					this.plugin.updateWallpaperStyles();
 				})
-			);
+			); */
 
-		const mec = new DocumentFragment()
-		mec.appendText("Check the multiple modes here: ")
-		mec.createEl("a", {
-			text: "Playcss - Background blend mode",
-			href: "https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode",
-		});
+		const defaultBackgroundColorSetting = new Setting(containerEl)
+		defaultBackgroundColorSetting
+			.setName("Background blend color")
+			.setClass("color-setting")
+			.setDesc(
+				`Select the color using the color picker to set its hex code value`
+			);
+		const valueInput = new TextComponent(defaultBackgroundColorSetting.controlEl);
+    	valueInput.setPlaceholder("Color hex code");
+    	valueInput.inputEl.addClass("color-setting-value");
+
+		defaultBackgroundColorSetting
+			.addButton((button) => {
+				button.setClass("color-picker")
+			})
+			.then(() => {
+				let input = valueInput.inputEl
+				let currentColor = valueInput.inputEl.value || null
+				let colorMap = this.plugin.settings.colorMap
+
+				let colorHex;
+				let pickrCreate = new Pickr({
+					el: ".color-picker",
+					theme: "nano",
+					swatches: colorMap,
+					defaultRepresentation: "HEXA",
+					default: colorMap[colorMap.length - 1],
+					comparison: false,
+					components: {
+						preview: true,
+						opacity: true,
+						hue: true,
+						interaction: {
+						hex: true,
+						rgba: true,
+						hsla: false,
+						hsva: false,
+						cmyk: false,
+						input: true,
+						clear: true,
+						cancel: true,
+						save: true,
+						},
+					},
+				})
+
+				pickrCreate
+				.on("clear", function (instance: Pickr) {
+					instance.hide()
+					input.trigger("change")
+				})
+				.on("cancel", function (instance: Pickr) {
+					currentColor = instance.getSelectedColor().toHEXA().toString();
+
+					input.trigger("change");
+					instance.hide();
+				})
+          		.on("change", function (color: Pickr.HSVaColor) {
+					colorHex = color.toHEXA().toString();
+					let newColor;
+					colorHex.length == 6
+					? (newColor = `${color.toHEXA().toString()}A6`)
+					: (newColor = color.toHEXA().toString());
+
+					input.setAttribute("value", newColor)
+					input.setAttribute("style", `background-color: ${newColor}; color: var(--text-normal);`)
+
+					input.setText(newColor);
+					input.textContent = newColor;
+					input.value = newColor;
+					input.trigger("change");
+				})
+				.on("save", function (color: Pickr.HSVaColor, instance: Pickr) {
+					let newColorValue = color.toHEXA().toString();
+
+					input.setText(newColorValue);
+					input.textContent = newColorValue;
+					input.value = newColorValue;
+					input.trigger("change");
+
+					instance.hide();
+					instance.addSwatch(color.toHEXA().toString());
+				});
+
+		})
 		
 		const bgBlendingModeOptions = {
 			"normal": "Normal",
@@ -498,9 +590,16 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			"luminosity": "Luminosity"
 		}
 
+		const backgroundBlendModeDescription = new DocumentFragment()
+		backgroundBlendModeDescription.appendText("Check the multiple modes here: ")
+		backgroundBlendModeDescription.createEl("a", {
+			text: "Playcss - Background blend mode",
+			href: "https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode",
+		});
+		
 		new Setting(containerEl)
 			.setName('Background Blending Mode')
-			.setDesc(mec)
+			.setDesc(backgroundBlendModeDescription)
 			.addDropdown((dropdown) => 
 			dropdown
 				.addOptions(bgBlendingModeOptions)

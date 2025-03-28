@@ -347,3 +347,9 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   grid-row-start: 2;
   align-items: center;
 }
+
+
+.color-setting-value {
+  /*width: 42%;*/
+  color: var(--text-normal);
+}
