@@ -447,7 +447,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.inputEl.addClass("slider-text")
 		defaultBlurText
 			.setValue(this.plugin.settings.blur.toString())
-			.setPlaceholder("0 to 100")
+			.setPlaceholder("0")
 			.onChange(async value => {
 				if(Number(value) > 100) value = "100"
 				if(Number(value) < 0) value = "0"
@@ -481,7 +481,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.inputEl.addClass("slider-text")
 		defaultBrightnessText
 			.setValue(this.plugin.settings.brightness.toString())
-			.setPlaceholder("0 to 200")
+			.setPlaceholder("0")
 			.onChange(async value => {
 				if(Number(value) > 200) value = "200"
 				if(Number(value) < 0) value = "0"
@@ -743,7 +743,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		})
 
 		
-		this.plugin.settings.notesBackgroundMap.forEach((notePath) => {
+		this.plugin.settings.notesBackgroundMap.forEach((note) => {
 			
 			const settingItem = pathsContainer.createEl("div");
 			settingItem.addClass("container-item-draggable");
@@ -754,10 +754,10 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 	
 			const vaultPath = (this.app.vault.adapter as any).basePath
 
-			if(fs.existsSync(vaultPath + "/" + notePath.notePath) && fs.lstatSync(vaultPath + "/" + notePath.notePath).isDirectory()) {
+			if(fs.existsSync(vaultPath + "/" + note.notePath) && fs.lstatSync(vaultPath + "/" + note.notePath).isDirectory()) {
 				// Folder
 				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>` 
-			} else if (fs.existsSync(vaultPath + "/" + notePath.notePath) && fs.lstatSync(vaultPath + "/" + notePath.notePath).isFile()) {
+			} else if (fs.existsSync(vaultPath + "/" + note.notePath) && fs.lstatSync(vaultPath + "/" + note.notePath).isFile()) {
 				// File
 				settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /></svg>`	
 			} else {
@@ -779,7 +779,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			notePathSettingInput.addClass("setting-item-input")
 			notePathSettingInput.placeholder = "Path to note"
 			notePathSettingInput.type = "text"
-			notePathSettingInput.value = notePath.notePath
+			notePathSettingInput.value = note.notePath
 			
 			// dyn effect
 			const dynamicEffectSetting = settingItem.createEl("div")
@@ -792,7 +792,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			dynamicEffectDropdown
 				.addOptions(defaultDynamicEffects)
 				//.addOptions(userAddedDynamicBackgrounds)	
-				.setValue(notePath.dynamicEffect)
+				.setValue(note.dynamicEffect)
 
 
 
@@ -807,7 +807,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			bgBlendDropdown
 				.addOptions(bgBlendingModeOptions)
 				//.addOptions(userAddedDynamicBackgrounds)	
-				.setValue(notePath.bgBlend)
+				.setValue(note.backgroundBlend)
 
 			// bg path
 			const backgroundPathSetting = settingItem.createEl("div")
@@ -821,7 +821,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			backgroundPathSettingInput.addClass("setting-item-input")
 			backgroundPathSettingInput.placeholder = "Path to background"
 			backgroundPathSettingInput.type = "text"
-			backgroundPathSettingInput.value = notePath.backgroundPath
+			backgroundPathSettingInput.value = note.backgroundPath
+
 			// bg color hex
 			const backgroundColorSetting = settingItem.createEl("div")
 
@@ -833,14 +834,14 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			backgroundColorInput.inputEl.addClass("color-setting-value");
 			backgroundColorInput
 			.setPlaceholder("Color hex code")
-			.setValue(this.plugin.settings.backgroundColor)
+			.setValue(note.backgroundColor)
 			.onChange((text) => {
 				backgroundColorInput.inputEl.setAttribute("value", text)
 				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${text}; color: var(--text-normal);`)
 			})
 			.then((input) =>{
-				backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
-				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+				backgroundColorInput.inputEl.setAttribute("value", note.backgroundColor)
+				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${note.backgroundColor}; color: var(--text-normal);`)
 			})
 
 			// bg color picker
@@ -923,9 +924,77 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					});
 			})
 
-			// bg brightness + blur slidersassdf
+			// blur slider
+			const backgroundBlurSetting = settingItem.createEl("div")
+			backgroundBlurSetting.addClass("slider-blur-setting")
 
-			// buttons
+			const backgroundBlurTextContainer = backgroundBlurSetting.createEl("div")
+			const backgroundBlurSliderContainer = backgroundBlurSetting.createEl("div")
+			backgroundBlurSliderContainer.addClass("slider-item-container")
+
+			const backgroundBlurLabel = backgroundBlurTextContainer.createEl("div")
+			backgroundBlurLabel.addClass("setting-item-label")
+			backgroundBlurLabel.textContent = "Blur"
+
+			const backgroundBlurText = new TextComponent(backgroundBlurTextContainer)
+			const backgroundBlurSlider = new SliderComponent(backgroundBlurSliderContainer)
+			backgroundBlurText
+				.inputEl.addClass("slider-text")
+			backgroundBlurText
+				.setValue(note.backgroundBlur.toString())
+				.setPlaceholder("0")
+				.onChange(async value => {
+					if(Number(value) > 100) value = "100"
+					if(Number(value) < 0) value = "0"
+					backgroundBlurText.setValue(value)
+					backgroundBlurSlider.setValue(Number(value))
+				});
+			backgroundBlurSlider
+				.setDynamicTooltip()
+				.setLimits(0, 100, 1)
+				.setValue(note.backgroundBlur)
+				.onChange(async value => {
+					backgroundBlurText.setValue(value.toString())
+				});
+
+			// brightness slider
+			const backgroundBrightnessSetting = settingItem.createEl("div")
+			backgroundBrightnessSetting.addClass("slider-brightness-setting")
+
+			const backgroundBrightnessTextContainer = backgroundBrightnessSetting.createEl("div")
+			const backgroundBrightnessSliderContainer = backgroundBrightnessSetting.createEl("div")
+			backgroundBrightnessSliderContainer.addClass("slider-item-container")
+
+			const backgroundBrightnessLabel = backgroundBrightnessTextContainer.createEl("div")
+			backgroundBrightnessLabel.addClass("setting-slider-label")
+			backgroundBrightnessLabel.textContent = "Brightness"
+
+			const backgroundBrightnessText = new TextComponent(backgroundBrightnessTextContainer)
+			const backgroundBrightnessSlider = new SliderComponent(backgroundBrightnessSliderContainer)
+			backgroundBrightnessText
+				.inputEl.addClass("slider-text")
+			backgroundBrightnessText
+				.setValue(note.backgroundBrightness.toString())
+				.setPlaceholder("0")
+				.onChange(async value => {
+					if(Number(value) > 200) value = "100"
+					if(Number(value) < 0) value = "0"
+					backgroundBrightnessText.setValue(value)
+					backgroundBrightnessSlider.setValue(Number(value))
+				});
+			backgroundBrightnessSlider
+				.setDynamicTooltip()
+				.setLimits(0, 200, 1)
+				.setValue(note.backgroundBrightness)
+				.onChange(async value => {
+					backgroundBrightnessText.setValue(value.toString())
+				});
+
+			// reset
+
+			// confirm
+
+			// delete
 
 
 

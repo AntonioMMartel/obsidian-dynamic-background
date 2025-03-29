@@ -322,6 +322,14 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   opacity: 0.5;
 }
 
+.setting-slider-label {
+  font-size: 0.7em;
+  padding-bottom: 0.2em;
+  padding-left: 0.45em;
+  opacity: 0.5;
+  width: 40px
+}
+
 .setting-item-input {
   width: 100%
 }
@@ -374,3 +382,27 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   width: 40px;
   text-align: center;
 }
+
+.slider-blur-setting {
+  grid-column: span 2 / span 2;
+  grid-column-start: 2;
+  grid-row-start: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider-brightness-setting {
+  grid-column: span 2 / span 2;
+  grid-column-start: 4;
+  grid-row-start: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider-item-container {
+  padding-top: 0.5em;
+  padding-left: 0.5em;
+}
+

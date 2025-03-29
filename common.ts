@@ -22,10 +22,10 @@ export interface DynamicBackgroundPluginSettings {
 		notePath: string, 
 		dynamicEffect: string, 
 		backgroundPath: string,
-		bgBlend: string,
-		colorHex: string,
-		bgBrightness: number,
-		bgBlur: number
+		backgroundBlend: string,
+		backgroundColor: string,
+		backgroundBrightness: number,
+		backgroundBlur: number
 	}[]
 	brightness: number;
 	backgroundColor: string;
