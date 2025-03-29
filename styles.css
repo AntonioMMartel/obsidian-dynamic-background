@@ -353,3 +353,19 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   /*width: 42%;*/
   color: var(--text-normal);
 }
+
+.pickr {
+  padding-top: 0.3em;
+  align-self: center;
+}
+.container-item-draggable > .color-picker-item > .pickr
+ {
+  padding-top:0.02em;
+  display: flex;
+  padding-bottom: 0.2em;
+  align-content: center;
+  justify-content: center;
+}
+.container-item-draggable > .color-picker-item > .setting-item-label {
+  text-align: center
+}

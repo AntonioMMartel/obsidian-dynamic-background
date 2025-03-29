@@ -11,7 +11,8 @@ import {
 	IconName,
 	addIcon,
 	Notice,
-	TFile
+	TFile,
+	ButtonComponent
 } from 'obsidian';
 import { Add_StarSky, Remove_StarSky} from 'effects/dark-dynamic-star-sky';
 import { Add_Snow, Remove_Snow, DarkTheme_Snow_Background_Property} from 'effects/dark-dynamic-snow';
@@ -464,26 +465,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						this.plugin.updateWallpaperStyles();
 					});
 			});	
-/*
-		new Setting(containerEl)
-			.setName('Background Blending Color')
-			.setDesc("Background Blending Color in Hexcode.")
-			.addTextArea((text) =>
-				text
-				.setValue(this.plugin.settings.backgroundColor)
-				.setPlaceholder("Example: red" )
-				.then((cb) => {
-					cb.inputEl.style.width = "100%";
-					cb.inputEl.rows = 1;
-				})
-				.onChange(async (value) => {
-					this.plugin.settings.backgroundColor = value;
-
-					await this.plugin.saveSettings();
-
-					this.plugin.updateWallpaperStyles();
-				})
-			); */
 
 		const defaultBackgroundColorSetting = new Setting(containerEl)
 		defaultBackgroundColorSetting
@@ -804,20 +785,106 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			backgroundPathSettingInput.value = notePath.backgroundPath
 			// bg color hex
 			const backgroundColorSetting = settingItem.createEl("div")
-			//backgroundPathSetting.addClass("background-path-setting")
 
 			const backgroundColorLabel = backgroundColorSetting.createEl("div")
 			backgroundColorLabel.addClass("setting-item-label")
 			backgroundColorLabel.textContent = "Background Color"
 			
-			const backgroundColorSettingInput = backgroundColorSetting.createEl("input")
-			backgroundColorSettingInput.addClass("setting-item-input")
-			backgroundColorSettingInput.placeholder = "Background color"
-			backgroundColorSettingInput.type = "text"
-			backgroundColorSettingInput.value = "0xFKSJDEDF"
-			// bg color picker
+			const backgroundColorInput = new TextComponent(backgroundColorSetting);
+			backgroundColorInput.inputEl.addClass("color-setting-value");
+			backgroundColorInput
+			.setPlaceholder("Color hex code")
+			.setValue(this.plugin.settings.backgroundColor)
+			.onChange((text) => {
+				backgroundColorInput.inputEl.setAttribute("value", text)
+				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${text}; color: var(--text-normal);`)
+			})
+			.then((input) =>{
+				backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
+				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+			})
 
-			// bg brightness + blur sliders
+			// bg color picker
+			const backgroundColorPickerSetting = settingItem.createEl("div")
+			backgroundColorPickerSetting.addClass("color-picker-item")
+
+			const backgroundColorPickerLabel = backgroundColorPickerSetting.createEl("div")
+			backgroundColorPickerLabel.addClass("setting-item-label")
+			backgroundColorPickerLabel.textContent = "Color Picker"
+			
+			const backgroundColorPicker = new ButtonComponent(backgroundColorPickerSetting)
+			backgroundColorPicker
+				.setClass("color-picker")
+				.then(() => {
+					let input = backgroundColorInput.inputEl
+					let currentColor = backgroundColorInput.inputEl.value || null
+					let colorMap = this.plugin.settings.colorMap
+
+					let colorHex;
+					let pickrCreate = new Pickr({
+						el: ".color-picker",
+						theme: "nano",
+						swatches: colorMap,
+						defaultRepresentation: "HEXA",
+						default: colorMap[colorMap.length - 1],
+						comparison: false,
+						components: {
+							preview: true,
+							opacity: true,
+							hue: true,
+							interaction: {
+							hex: true,
+							rgba: true,
+							hsla: false,
+							hsva: false,
+							cmyk: false,
+							input: true,
+							clear: true,
+							cancel: true,
+							save: true,
+							},
+						},
+					})
+					pickrCreate
+					.on("clear", function (instance: Pickr) {
+						instance.hide()
+						input.trigger("change")
+					})
+					.on("cancel", function (instance: Pickr) {
+						currentColor = instance.getSelectedColor().toHEXA().toString();
+
+						input.trigger("change");
+						instance.hide();
+					})
+					.on("change", function (color: Pickr.HSVaColor) {
+						colorHex = color.toHEXA().toString();
+						let newColor;
+						colorHex.length == 6
+						? (newColor = `${color.toHEXA().toString()}A6`)
+						: (newColor = color.toHEXA().toString());
+
+						input.setAttribute("value", newColor)
+						input.setAttribute("style", `background-color: ${newColor}; color: var(--text-normal);`)
+
+						input.setText(newColor);
+						input.textContent = newColor;
+						input.value = newColor;
+						input.trigger("change");
+					})
+					.on("save", function (color: Pickr.HSVaColor, instance: Pickr) {
+						let newColorValue = color.toHEXA().toString();
+
+						input.setText(newColorValue);
+						input.textContent = newColorValue;
+						input.value = newColorValue;
+						input.trigger("change");
+
+						instance.hide();
+						instance.addSwatch(color.toHEXA().toString());
+					});
+			})
+
+			// bg brightness + blur slidersassdf
 
 			// buttons
 
