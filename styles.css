@@ -369,3 +369,8 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
 .container-item-draggable > .color-picker-item > .setting-item-label {
   text-align: center
 }
+
+.slider-text {
+  width: 40px;
+  text-align: center;
+}

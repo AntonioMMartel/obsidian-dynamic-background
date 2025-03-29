@@ -12,7 +12,8 @@ import {
 	addIcon,
 	Notice,
 	TFile,
-	ButtonComponent
+	ButtonComponent,
+	SliderComponent
 } from 'obsidian';
 import { Add_StarSky, Remove_StarSky} from 'effects/dark-dynamic-star-sky';
 import { Add_Snow, Remove_Snow, DarkTheme_Snow_Background_Property} from 'effects/dark-dynamic-snow';
@@ -435,36 +436,74 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				})
 			);
 
-		new Setting(containerEl)
-			.setName('Blur')
-			.setDesc('The blurriness of the wallpaper, 0 means no blur.')
-			.addSlider(tc => {
-				tc.setDynamicTooltip()
-					.setLimits(0, 100, 1)
-					.setValue(this.plugin.settings.blur)
-					.onChange(async value => {
-						this.plugin.settings.blur = value;
-						await this.plugin.saveSettings();
-						this.plugin.updateWallpaperStyles();
-					});
-			});	
+
+		const defaultBlurSetting = new Setting(containerEl)
+		defaultBlurSetting
+			.setName('Default blur')
+			.setDesc('The default blurriness of the wallpaper.')
+		const defaultBlurText = new TextComponent(defaultBlurSetting.controlEl)
+		const defaultBlurSlider = new SliderComponent(defaultBlurSetting.controlEl)
+		defaultBlurText
+			.inputEl.addClass("slider-text")
+		defaultBlurText
+			.setValue(this.plugin.settings.blur.toString())
+			.setPlaceholder("0 to 100")
+			.onChange(async value => {
+				if(Number(value) > 100) value = "100"
+				if(Number(value) < 0) value = "0"
+				defaultBlurText.setValue(value)
+				defaultBlurSlider.setValue(Number(value))
+				this.plugin.settings.blur = Number(value);
+				
+				await this.plugin.saveSettings();
+
+				this.plugin.updateWallpaperStyles();
+			});
+		defaultBlurSlider
+			.setDynamicTooltip()
+			.setLimits(0, 100, 1)
+			.setValue(this.plugin.settings.blur)
+			.onChange(async value => {
+				this.plugin.settings.blur = value;
+				defaultBlurText.setValue(value.toString())
+				await this.plugin.saveSettings();
+				this.plugin.updateWallpaperStyles();
+			});
 
 
-		new Setting(containerEl)
-			.setName('Brightness')
-			.setDesc('The Brightness of the wallpaper.')
-			.addSlider(tc => {
-				tc.setDynamicTooltip()
-					.setLimits(0, 200, 1)
-					.setValue(this.plugin.settings.brightness)
-					.onChange(async value => {
-						this.plugin.settings.brightness = value;
+		const defaultBrightnessSetting = new Setting(containerEl)
+		defaultBrightnessSetting
+			.setName('Default brightness')
+			.setDesc('The default brightness of the wallpaper.')
+		const defaultBrightnessText = new TextComponent(defaultBrightnessSetting.controlEl)
+		const defaultBrightnessSlider = new SliderComponent(defaultBrightnessSetting.controlEl)
+		defaultBrightnessText
+			.inputEl.addClass("slider-text")
+		defaultBrightnessText
+			.setValue(this.plugin.settings.brightness.toString())
+			.setPlaceholder("0 to 200")
+			.onChange(async value => {
+				if(Number(value) > 200) value = "200"
+				if(Number(value) < 0) value = "0"
+				defaultBrightnessText.setValue(value)
+				defaultBrightnessSlider.setValue(Number(value))
+				this.plugin.settings.brightness = Number(value);
+				
+				await this.plugin.saveSettings();
 
-						await this.plugin.saveSettings();
+				this.plugin.updateWallpaperStyles();
+			});
+		defaultBrightnessSlider
+			.setDynamicTooltip()
+			.setLimits(0, 200, 1)
+			.setValue(this.plugin.settings.brightness)
+			.onChange(async value => {
+				this.plugin.settings.brightness = value;
+				defaultBrightnessText.setValue(value.toString())
+				await this.plugin.saveSettings();
 
-						this.plugin.updateWallpaperStyles();
-					});
-			});	
+				this.plugin.updateWallpaperStyles();
+			});
 
 		const defaultBackgroundColorSetting = new Setting(containerEl)
 		defaultBackgroundColorSetting
