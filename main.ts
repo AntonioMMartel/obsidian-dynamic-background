@@ -1297,10 +1297,31 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				.setIcon("delete-icon")
 				.setTooltip("Remove")
 				.onClick(async () => {
-					new Notice(`Note background settings deleted`);
-					this.plugin.settings.notesBackgroundMap.remove(note);
-					await this.plugin.saveSettings();
-					this.display();
+					const confirmModal = new Modal(this.app)
+					confirmModal.setTitle("Delete note path")
+					new Setting(confirmModal.contentEl)
+						.setName(`Background settings for the note in path: "` + note.notePath + `"will be deleted`)
+						.addButton((button) => {button
+							.setTooltip("Delete")
+							.setButtonText("Delete")
+							.setClass("delete-button")
+							.onClick(async (button) => {
+								this.plugin.settings.notesBackgroundMap.remove(note);
+								await this.plugin.saveSettings();
+								this.display();
+								confirmModal.close()
+							})
+						})
+						.addButton(button => { button
+							.setTooltip("Cancel")
+							.setButtonText("Cancel")
+							.onClick((button) => {
+								confirmModal.close()
+							})
+						})
+					confirmModal.open()
+
+
 				}); 
 
 		});
