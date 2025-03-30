@@ -512,18 +512,18 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.setDesc(
 				`Select the color using the color picker to set its hex code value`
 			);
-		const backgroundColorInput = new TextComponent(defaultBackgroundColorSetting.controlEl);
-    	backgroundColorInput.inputEl.addClass("color-setting-value");
-		backgroundColorInput
+		const defaultBackgroundColorInput = new TextComponent(defaultBackgroundColorSetting.controlEl);
+    	defaultBackgroundColorInput.inputEl.addClass("color-setting-value");
+		defaultBackgroundColorInput
 			.setPlaceholder("Color hex code")
 			.setValue(this.plugin.settings.backgroundColor)
 			.onChange((text) => {
-				backgroundColorInput.inputEl.setAttribute("value", text)
-				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${text}; color: var(--text-normal);`)
+				defaultBackgroundColorInput.inputEl.setAttribute("value", text)
+				defaultBackgroundColorInput.inputEl.setAttribute("style", `background-color: ${text}; color: var(--text-normal);`)
 			})
 			.then((input) =>{
-				backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
-				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+				defaultBackgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
+				defaultBackgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
 			})
 		
 
@@ -534,8 +534,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				button.setClass("color-picker")
 			})
 			.then(() => {
-				let input = backgroundColorInput.inputEl
-				let currentColor = backgroundColorInput.inputEl.value || null
+				let input = defaultBackgroundColorInput.inputEl
+				let currentColor = defaultBackgroundColorInput.inputEl.value || null
 				let colorMap = this.plugin.settings.colorMap
 
 				let colorHex;
@@ -608,7 +608,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					.setTooltip("Save")
 					.onClick(async (buttonEl : any) => {						
 						await this.plugin.saveSettings()
-						this.plugin.settings.backgroundColor = backgroundColorInput.inputEl.value
+						this.plugin.settings.backgroundColor = defaultBackgroundColorInput.inputEl.value
 						this.plugin.saveData(this.plugin.settings)
 						this.plugin.updateWallpaperStyles();
 						new Notice("Default color set and saved successfully")
@@ -654,17 +654,247 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					this.plugin.updateWallpaperStyles();
 				})
 			)
-		addIcon("new-icon", `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>`)
+		//addIcon("new-icon", `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>`)
 
-
-		/*
-		const noteBackgroundSetting = new Setting(containerEl)
-
-		noteBackgroundSetting
+		const noteBackgroundInfo = new Setting(containerEl)
+		noteBackgroundInfo
 			.setName('Add dynamic effect to note')
-			.setDesc('Set specific dynamic effect for notes in specific path')
+			.setDesc('Set specific dynamic effect and background for notes in specific path')
 			.setClass("note-background-settings")
 
+		const noteBackgroundSetting = containerEl.createEl("div");
+		noteBackgroundSetting.addClass("container-item-draggable");
+		noteBackgroundSetting.addClass("container-item-draggable")
+
+		const settingIcon = noteBackgroundSetting.createEl("div");
+		settingIcon.addClass("setting-item-icon");
+		settingIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" style="--darkreader-inline-stroke: currentColor;" data-darkreader-inline-stroke=""> <path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5"></path> <path d="M14 3v4a1 1 0 0 0 1 1h4"></path> <path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5"></path> </svg> `
+		// Note path
+		const notePathSetting = noteBackgroundSetting.createEl("div")
+		notePathSetting.addClass("note-path-setting")
+
+		const notePathLabel = notePathSetting.createEl("div")
+		notePathLabel.addClass("setting-item-label")
+		notePathLabel.textContent = "Note path"
+		
+		const notePathSettingInput = notePathSetting.createEl("input")
+		notePathSettingInput.addClass("setting-item-input")
+		notePathSettingInput.placeholder = "Path to note"
+		notePathSettingInput.type = "text"
+		notePathSettingInput.value = ""
+		
+		// dyn effect
+		const dynamicEffectSetting = noteBackgroundSetting.createEl("div")
+
+		const dynamicEffectLabel = dynamicEffectSetting.createEl("div")
+		dynamicEffectLabel.addClass("setting-item-label")
+		dynamicEffectLabel.textContent = "Dynamic effect"
+
+		const dynamicEffectDropdown = new DropdownComponent(dynamicEffectSetting)
+		dynamicEffectDropdown
+			.addOptions(defaultDynamicEffects)
+			//.addOptions(userAddedDynamicBackgrounds)	
+			//.setValue("None") // revisar
+
+
+
+		// bg blend
+		const bgBlendSetting = noteBackgroundSetting.createEl("div")
+
+		const bgBlendLabel = bgBlendSetting.createEl("div")
+		bgBlendLabel.addClass("setting-item-label")
+		bgBlendLabel.textContent = "Background blend"
+
+		const bgBlendDropdown = new DropdownComponent(bgBlendSetting)
+		bgBlendDropdown
+			.addOptions(bgBlendingModeOptions)
+			//.addOptions(userAddedDynamicBackgrounds)	
+			.setValue("")
+
+		// bg path
+		const backgroundPathSetting = noteBackgroundSetting.createEl("div")
+		backgroundPathSetting.addClass("background-path-setting")
+
+		const backgroundPathLabel = backgroundPathSetting.createEl("div")
+		backgroundPathLabel.addClass("setting-item-label")
+		backgroundPathLabel.textContent = "Background path"
+		
+		const backgroundPathSettingInput = backgroundPathSetting.createEl("input")
+		backgroundPathSettingInput.addClass("setting-item-input")
+		backgroundPathSettingInput.placeholder = "Path to background"
+		backgroundPathSettingInput.type = "text"
+		backgroundPathSettingInput.value = ""
+
+		// bg color hex
+		const backgroundColorSetting = noteBackgroundSetting.createEl("div")
+
+		const backgroundColorLabel = backgroundColorSetting.createEl("div")
+		backgroundColorLabel.addClass("setting-item-label")
+		backgroundColorLabel.textContent = "Background Color"
+		
+		const backgroundColorInput = new TextComponent(backgroundColorSetting);
+		backgroundColorInput.inputEl.addClass("color-setting-value");
+		backgroundColorInput
+		.setPlaceholder("Color hex code")
+		.setValue(this.plugin.settings.backgroundColor)
+		.onChange((text) => {
+			backgroundColorInput.inputEl.setAttribute("value", text)
+			backgroundColorInput.inputEl.setAttribute("style", `background-color: ${text}; color: var(--text-normal);`)
+		})
+		.then((input) =>{
+			backgroundColorInput.inputEl.setAttribute("value",this.plugin.settings.backgroundColor)
+			backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+		})
+
+		// bg color picker
+		const backgroundColorPickerSetting = noteBackgroundSetting.createEl("div")
+		backgroundColorPickerSetting.addClass("color-picker-item")
+
+		const backgroundColorPickerLabel = backgroundColorPickerSetting.createEl("div")
+		backgroundColorPickerLabel.addClass("setting-item-label")
+		backgroundColorPickerLabel.textContent = "Color Picker"
+		
+		const backgroundColorPicker = new ButtonComponent(backgroundColorPickerSetting)
+		backgroundColorPicker
+			.setClass("color-picker")
+			.then(() => {
+				let input = backgroundColorInput.inputEl
+				let currentColor = backgroundColorInput.inputEl.value || null
+				let colorMap = this.plugin.settings.colorMap
+
+				let colorHex;
+				let pickrCreate = new Pickr({
+					el: ".color-picker",
+					theme: "nano",
+					swatches: colorMap,
+					defaultRepresentation: "HEXA",
+					default: colorMap[colorMap.length - 1],
+					comparison: false,
+					components: {
+						preview: true,
+						opacity: true,
+						hue: true,
+						interaction: {
+						hex: true,
+						rgba: true,
+						hsla: false,
+						hsva: false,
+						cmyk: false,
+						input: true,
+						clear: true,
+						cancel: true,
+						save: true,
+						},
+					},
+				})
+				pickrCreate
+				.on("clear", function (instance: Pickr) {
+					instance.hide()
+					input.trigger("change")
+				})
+				.on("cancel", function (instance: Pickr) {
+					currentColor = instance.getSelectedColor().toHEXA().toString();
+
+					input.trigger("change");
+					instance.hide();
+				})
+				.on("change", function (color: Pickr.HSVaColor) {
+					colorHex = color.toHEXA().toString();
+					let newColor;
+					colorHex.length == 6
+					? (newColor = `${color.toHEXA().toString()}A6`)
+					: (newColor = color.toHEXA().toString());
+
+					input.setAttribute("value", newColor)
+					input.setAttribute("style", `background-color: ${newColor}; color: var(--text-normal);`)
+
+					input.setText(newColor);
+					input.textContent = newColor;
+					input.value = newColor;
+					input.trigger("change");
+				})
+				.on("save", function (color: Pickr.HSVaColor, instance: Pickr) {
+					let newColorValue = color.toHEXA().toString();
+
+					input.setText(newColorValue);
+					input.textContent = newColorValue;
+					input.value = newColorValue;
+					input.trigger("change");
+
+					instance.hide();
+					instance.addSwatch(color.toHEXA().toString());
+				});
+		})
+
+		// blur slider
+		const backgroundBlurSetting = noteBackgroundSetting.createEl("div")
+		backgroundBlurSetting.addClass("slider-blur-setting")
+
+		const backgroundBlurTextContainer = backgroundBlurSetting.createEl("div")
+		const backgroundBlurSliderContainer = backgroundBlurSetting.createEl("div")
+		backgroundBlurSliderContainer.addClass("slider-item-container")
+
+		const backgroundBlurLabel = backgroundBlurTextContainer.createEl("div")
+		backgroundBlurLabel.addClass("setting-item-label")
+		backgroundBlurLabel.textContent = "Blur"
+
+		const backgroundBlurText = new TextComponent(backgroundBlurTextContainer)
+		const backgroundBlurSlider = new SliderComponent(backgroundBlurSliderContainer)
+		backgroundBlurText
+			.inputEl.addClass("slider-text")
+		backgroundBlurText
+			.setValue("0")
+			.setPlaceholder("0")
+			.onChange(async value => {
+				if(Number(value) > 100) value = "100"
+				if(Number(value) < 0 || value == "") value = "0"
+				backgroundBlurText.setValue(value)
+				backgroundBlurSlider.setValue(Number(value))
+			});
+		backgroundBlurSlider
+			.setDynamicTooltip()
+			.setLimits(0, 100, 1)
+			.setValue(0)
+			.onChange(async value => {
+				backgroundBlurText.setValue(value.toString())
+			});
+
+		// brightness slider
+		const backgroundBrightnessSetting = noteBackgroundSetting.createEl("div")
+		backgroundBrightnessSetting.addClass("slider-brightness-setting")
+
+		const backgroundBrightnessTextContainer = backgroundBrightnessSetting.createEl("div")
+		const backgroundBrightnessSliderContainer = backgroundBrightnessSetting.createEl("div")
+		backgroundBrightnessSliderContainer.addClass("slider-item-container")
+
+		const backgroundBrightnessLabel = backgroundBrightnessTextContainer.createEl("div")
+		backgroundBrightnessLabel.addClass("setting-slider-label")
+		backgroundBrightnessLabel.textContent = "Brightness"
+
+		const backgroundBrightnessText = new TextComponent(backgroundBrightnessTextContainer)
+		const backgroundBrightnessSlider = new SliderComponent(backgroundBrightnessSliderContainer)
+		backgroundBrightnessText
+			.inputEl.addClass("slider-text")
+		backgroundBrightnessText
+			.setValue("0")
+			.setPlaceholder("0")
+			.onChange(async value => {
+				if(Number(value) > 200) value = "100"
+				if(Number(value) < 0 || value == "") value = "0"
+				backgroundBrightnessText.setValue(value)
+				backgroundBrightnessSlider.setValue(Number(value))
+			});
+		backgroundBrightnessSlider
+			.setDynamicTooltip()
+			.setLimits(0, 200, 1)
+			.setValue(0)
+			.onChange(async value => {
+				backgroundBrightnessText.setValue(value.toString())
+			});
+
+		
+
+		/*
 		const pathInput = new TextComponent(noteBackgroundSetting.controlEl)
 		pathInput
 			.setPlaceholder("Path to note")
@@ -688,7 +918,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 
 
-		addIcon("new-icon", `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>`)
 		noteBackgroundSetting
 			.addButton((button) => {
 				button
@@ -719,6 +948,13 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			})
 
 		*/
+		const noteBackgroundListInfo = new Setting(containerEl)
+
+		noteBackgroundListInfo
+			.setName('Note dynamic effects list')
+			.setDesc('View or change saved dynamic effects and backgrounds for notes')
+			.setClass("note-background-settings")
+		
 		const pathsContainer = containerEl.createEl("div", {
 			cls: "paths-container"
 		})

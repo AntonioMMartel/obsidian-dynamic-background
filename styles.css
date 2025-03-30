@@ -369,7 +369,7 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
 .container-item-draggable > .color-picker-item > .pickr
  {
   padding-top:0.02em;
-  display: flex;
+  display: flex !important;
   padding-bottom: 0.2em;
   align-content: center;
   justify-content: center;
@@ -387,7 +387,7 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   grid-column: span 2 / span 2;
   grid-column-start: 2;
   grid-row-start: 3;
-  display: flex;
+  display: flex !important;
   justify-content: center;
   align-items: center;
 }
@@ -396,7 +396,7 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   grid-column: span 2 / span 2;
   grid-column-start: 4;
   grid-row-start: 3;
-  display: flex;
+  display: flex !important;
   justify-content: center;
   align-items: center;
 }
