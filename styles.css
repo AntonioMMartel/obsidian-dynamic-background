@@ -406,3 +406,31 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   padding-left: 0.5em;
 }
 
+.buttons-container {
+  grid-column: span 2 / span 2;
+  grid-column-start: 6;
+  grid-row-start: 3;
+  display:flex;
+  align-items: end;
+  justify-content: end;
+  align-self: end;
+  margin-right: 0.4em;
+}
+
+.setting-button {
+  width: 50px;
+  height: 32px;
+}
+
+.save-button {
+  background-color: color-mix(in srgb, var(--color-green), transparent 20%) !important
+}
+.save-button:hover {
+  background-color: color-mix(in srgb, var(--color-green), transparent 10%) !important;
+  cursor: pointer
+
+}
+
+.delete-button {
+  background-color: var(--color-red) !important;
+}

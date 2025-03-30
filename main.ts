@@ -343,7 +343,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 		containerEl.createEl('h2', {text: 'Dynamic Background Plugin - Settings'});
 
-		let defaultDynamicEffects = 
+		const defaultDynamicEffects = 
 			{
 				[DynamicEffectEnum.None.toString()]: "None",
 				[DynamicEffectEnum.Dark_DigitalRain.toString()]: "Dark - Matrix / Digital Rain",
@@ -654,12 +654,13 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					this.plugin.updateWallpaperStyles();
 				})
 			)
+
 		//addIcon("new-icon", `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-dashed-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95" /><path d="M3.69 8.56a9 9 0 0 0 -.69 3.44" /><path d="M3.69 15.44a9 9 0 0 0 1.95 2.92" /><path d="M8.56 20.31a9 9 0 0 0 3.44 .69" /><path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95" /><path d="M20.31 15.44a9 9 0 0 0 .69 -3.44" /><path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92" /><path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>`)
 
 		const noteBackgroundInfo = new Setting(containerEl)
 		noteBackgroundInfo
 			.setName('Add dynamic effect to note')
-			.setDesc('Set specific dynamic effect and background for notes in specific path')
+			.setDesc('Set specific dynamic effect and background for notes in specific path. Paths should include the file extension. Eg: note.md')
 			.setClass("note-background-settings")
 
 		const noteBackgroundSetting = containerEl.createEl("div");
@@ -669,6 +670,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		const settingIcon = noteBackgroundSetting.createEl("div");
 		settingIcon.addClass("setting-item-icon");
 		settingIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" style="--darkreader-inline-stroke: currentColor;" data-darkreader-inline-stroke=""> <path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5"></path> <path d="M14 3v4a1 1 0 0 0 1 1h4"></path> <path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5"></path> </svg> `
+		
 		// Note path
 		const notePathSetting = noteBackgroundSetting.createEl("div")
 		notePathSetting.addClass("note-path-setting")
@@ -679,7 +681,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		
 		const notePathSettingInput = notePathSetting.createEl("input")
 		notePathSettingInput.addClass("setting-item-input")
-		notePathSettingInput.placeholder = "Path to note"
+		notePathSettingInput.placeholder = "Path to note (Eg: note.md)"
 		notePathSettingInput.type = "text"
 		notePathSettingInput.value = ""
 		
@@ -693,10 +695,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		const dynamicEffectDropdown = new DropdownComponent(dynamicEffectSetting)
 		dynamicEffectDropdown
 			.addOptions(defaultDynamicEffects)
-			//.addOptions(userAddedDynamicBackgrounds)	
-			//.setValue("None") // revisar
-
-
 
 		// bg blend
 		const bgBlendSetting = noteBackgroundSetting.createEl("div")
@@ -708,8 +706,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		const bgBlendDropdown = new DropdownComponent(bgBlendSetting)
 		bgBlendDropdown
 			.addOptions(bgBlendingModeOptions)
-			//.addOptions(userAddedDynamicBackgrounds)	
-			.setValue("")
 
 		// bg path
 		const backgroundPathSetting = noteBackgroundSetting.createEl("div")
@@ -721,7 +717,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		
 		const backgroundPathSettingInput = backgroundPathSetting.createEl("input")
 		backgroundPathSettingInput.addClass("setting-item-input")
-		backgroundPathSettingInput.placeholder = "Path to background"
+		backgroundPathSettingInput.placeholder = "Path to background (Eg. image.png)"
 		backgroundPathSettingInput.type = "text"
 		backgroundPathSettingInput.value = ""
 
@@ -892,62 +888,42 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				backgroundBrightnessText.setValue(value.toString())
 			});
 
-		
+		// save button
+		const buttonsContainer = noteBackgroundSetting.createEl("div")
+		buttonsContainer.addClass("buttons-container")
 
-		/*
-		const pathInput = new TextComponent(noteBackgroundSetting.controlEl)
-		pathInput
-			.setPlaceholder("Path to note")
-			.inputEl.addClass("path-input-settings")
+		const saveButton = new ButtonComponent(buttonsContainer)
 
-		
-		let selectedDynamicEffect:string = DynamicEffectEnum.None.toString()
-		const backgroundDropdown = new DropdownComponent(noteBackgroundSetting.controlEl)
-		backgroundDropdown
-			.addOptions(defaultDynamicEffects)
-			//.addOptions(userAddedDynamicBackgrounds)
-			.setValue(selectedDynamicEffect)
-			.onChange((value) => {
-				selectedDynamicEffect = value
-			})
-
-		const imageInput = new TextComponent(noteBackgroundSetting.controlEl)
-		imageInput
-			.setPlaceholder("Path to background image")
-			.inputEl.addClass("path-input-settings")
-
-
-
-		noteBackgroundSetting
-			.addButton((button) => {
-				button
-					.setClass("background-save-button")
-					.setIcon("save-icon")
-					.setTooltip("Save")
-					.onClick(async (buttonEl : any) => {
-						let notePath = pathInput.inputEl.value
-						let dynamicEffect = backgroundDropdown.getValue()
-						let backgroundPath = imageInput.inputEl.value
-
-						if (notePath && backgroundPath && dynamicEffect) {
-							this.plugin.settings.notesBackgroundMap.push({
-								"notePath": notePath,
-								"dynamicEffect": dynamicEffect,
-								"backgroundPath": backgroundPath
-							})
-							new Notice("Note background saved successfully")
-							await this.plugin.saveSettings()
-							this.plugin.saveData(this.plugin.settings)
-							this.display()
-						} else if(!notePath) {
-							new Notice("No note path has been added")
-						} else if(!backgroundPath) {
-							new Notice("No background path has been added")
-						}
+		saveButton
+			.setClass("save-button")
+			.setClass("setting-button")
+			.setIcon("save-icon")
+			.setTooltip("Save")
+			.onClick(async (button) => {
+				let notePath = notePathSettingInput.value
+				if (notePath) {
+					this.plugin.settings.notesBackgroundMap.push({
+						"notePath": notePath,
+						"dynamicEffect": dynamicEffectDropdown.getValue(),
+						"backgroundPath": backgroundPathSettingInput.value,
+						"backgroundBlend": bgBlendDropdown.getValue(),
+						"backgroundColor": backgroundColorInput.getValue(),
+						"backgroundBrightness": backgroundBrightnessSlider.getValue(),
+						"backgroundBlur": backgroundBlurSlider.getValue()
 					})
+					new Notice("Note background saved successfully")
+					await this.plugin.saveSettings()
+					this.plugin.saveData(this.plugin.settings)
+					this.display()
+				} else if(!notePath) {
+					new Notice("No note path has been added")
+				}
 			})
 
-		*/
+		// undo button
+
+
+
 		const noteBackgroundListInfo = new Setting(containerEl)
 
 		noteBackgroundListInfo
