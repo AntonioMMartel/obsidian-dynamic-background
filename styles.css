@@ -414,12 +414,13 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   align-items: end;
   justify-content: end;
   align-self: end;
-  margin-right: 0.4em;
+
 }
 
 .setting-button {
   width: 50px;
   height: 32px;
+  margin-right: 1em;
 }
 
 .save-button {
@@ -428,9 +429,20 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
 .save-button:hover {
   background-color: color-mix(in srgb, var(--color-green), transparent 10%) !important;
   cursor: pointer
+}
 
+.undo-button {
+  background-color: color-mix(in srgb, var(--color-blue), transparent 20%) !important
+}
+.undo-button:hover {
+  background-color: color-mix(in srgb, var(--color-blue), transparent 10%) !important;
+  cursor: pointer
 }
 
 .delete-button {
-  background-color: var(--color-red) !important;
+  background-color: color-mix(in srgb, var(--color-red), transparent 20%) !important
+}
+.delete-button:hover {
+  background-color: color-mix(in srgb, var(--color-red), transparent 10%) !important;
+  cursor: pointer
 }

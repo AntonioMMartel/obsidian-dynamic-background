@@ -888,12 +888,38 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				backgroundBrightnessText.setValue(value.toString())
 			});
 
-		// save button
+		// Buttons
 		const buttonsContainer = noteBackgroundSetting.createEl("div")
 		buttonsContainer.addClass("buttons-container")
 
-		const saveButton = new ButtonComponent(buttonsContainer)
+		// undo button
+		const undoButton = new ButtonComponent(buttonsContainer)
+		addIcon("reset-icon", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" style="--darkreader-inline-stroke: currentColor;" data-darkreader-inline-stroke=""> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> <path d="M12 9l0 3"></path> <path d="M12 15l.01 0"></path> </svg> `)
+		undoButton
+			.setClass("undo-button")
+			.setClass("setting-button")
+			.setIcon("reset-icon")
+			.setTooltip("Reset")
+			.onClick(async (button) => {
+				notePathSettingInput.value = ""
+				dynamicEffectDropdown.setValue(this.plugin.settings.dynamicEffect.toString())
+				backgroundPathSettingInput.value = ""
+				bgBlendDropdown.setValue(this.plugin.settings.backgroundBlendMode)
 
+				backgroundColorInput.setValue(this.plugin.settings.backgroundColor)
+				backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
+				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+
+				backgroundBrightnessSlider.setValue(0)
+				backgroundBrightnessText.setValue("0")
+
+				backgroundBlurSlider.setValue(0)
+				backgroundBlurText.setValue("0")
+			})
+
+		// save button
+		const saveButton = new ButtonComponent(buttonsContainer)
+		const date = new Date()
 		saveButton
 			.setClass("save-button")
 			.setClass("setting-button")
@@ -903,6 +929,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				let notePath = notePathSettingInput.value
 				if (notePath) {
 					this.plugin.settings.notesBackgroundMap.push({
+						"index": date.getMilliseconds(),
 						"notePath": notePath,
 						"dynamicEffect": dynamicEffectDropdown.getValue(),
 						"backgroundPath": backgroundPathSettingInput.value,
@@ -919,9 +946,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					new Notice("No note path has been added")
 				}
 			})
-
-		// undo button
-
 
 
 		const noteBackgroundListInfo = new Setting(containerEl)
@@ -1005,8 +1029,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				.addOptions(defaultDynamicEffects)
 				//.addOptions(userAddedDynamicBackgrounds)	
 				.setValue(note.dynamicEffect)
-
-
 
 			// bg blend
 			const bgBlendSetting = settingItem.createEl("div")
@@ -1201,13 +1223,69 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				.onChange(async value => {
 					backgroundBrightnessText.setValue(value.toString())
 				});
+			
+			// Buttons
+			const buttonsContainer = settingItem.createEl("div")
+			buttonsContainer.addClass("buttons-container")
 
-			// reset
+			
+			// undo button
+			const undoButton = new ButtonComponent(buttonsContainer)
+			addIcon("undo-icon", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" style="--darkreader-inline-stroke: currentColor;" data-darkreader-inline-stroke=""> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg> `)
+			undoButton
+				.setClass("undo-button")
+				.setClass("setting-button")
+				.setIcon("undo-icon")
+				.setTooltip("Undo changes")
+				.onClick(async (button) => {
+					notePathSettingInput.value = note.notePath
+					dynamicEffectDropdown.setValue(note.dynamicEffect)
+					backgroundPathSettingInput.value = note.backgroundPath
+					bgBlendDropdown.setValue(note.backgroundBlend)
 
-			// confirm
+					backgroundColorInput.setValue(note.backgroundColor)
+					backgroundColorInput.inputEl.setAttribute("value", note.backgroundColor)
+					backgroundColorInput.inputEl.setAttribute("style", `background-color: ${note.backgroundColor}; color: var(--text-normal);`)
 
-			// delete
+					backgroundBrightnessSlider.setValue(note.backgroundBrightness)
+					backgroundBrightnessText.setValue(note.backgroundBrightness.toString())
 
+					backgroundBlurSlider.setValue(note.backgroundBlur)
+					backgroundBlurText.setValue(note.backgroundBlur.toString())
+				})
+
+			// save button
+			const saveButton = new ButtonComponent(buttonsContainer)
+
+			saveButton
+				.setClass("save-button")
+				.setClass("setting-button")
+				.setIcon("save-icon")
+				.setTooltip("Save changes")
+				.onClick(async (button) => {
+					let notePath = notePathSettingInput.value
+					if (notePath) {
+						const modifyIndex:number = this.plugin.settings.notesBackgroundMap.findIndex(notes => notes.index == note.index) 
+						console.log(this.plugin.settings.notesBackgroundMap[modifyIndex])
+						this.plugin.settings.notesBackgroundMap[modifyIndex] =
+						{
+							"index": note.index,
+							"notePath": notePathSettingInput.value,
+							"dynamicEffect": dynamicEffectDropdown.getValue(),
+							"backgroundPath": backgroundPathSettingInput.value,
+							"backgroundBlend": bgBlendDropdown.getValue(),
+							"backgroundColor": backgroundColorInput.getValue(),
+							"backgroundBrightness": backgroundBrightnessSlider.getValue(),
+							"backgroundBlur": backgroundBlurSlider.getValue()
+						}
+						new Notice("Note background updated successfully")
+						await this.plugin.saveSettings()
+						this.plugin.saveData(this.plugin.settings)
+						this.display()
+					} else if(!notePath) {
+						new Notice("No note path has been added")
+					}
+				})
 
 
 			addIcon("delete-icon",`<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>`)

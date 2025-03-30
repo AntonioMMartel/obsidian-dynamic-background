@@ -19,6 +19,7 @@ export interface DynamicBackgroundPluginSettings {
 	backgroundImageFile: string;
 	blur:number;
 	notesBackgroundMap: {
+		index: number,
 		notePath: string, 
 		dynamicEffect: string, 
 		backgroundPath: string,
