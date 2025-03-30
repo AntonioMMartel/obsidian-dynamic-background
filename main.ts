@@ -929,7 +929,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				let notePath = notePathSettingInput.value
 				if (notePath) {
 					this.plugin.settings.notesBackgroundMap.push({
-						"index": date.getMilliseconds(),
+						"index": date.getTime(),
 						"notePath": notePath,
 						"dynamicEffect": dynamicEffectDropdown.getValue(),
 						"backgroundPath": backgroundPathSettingInput.value,
