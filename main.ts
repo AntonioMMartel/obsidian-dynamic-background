@@ -120,6 +120,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 				this.preBackgroundBrightness = note.backgroundBrightness
 				this.preBackgroundColor = note.backgroundColor
 				this.preBackgroundBlending = note.backgroundBlend
+				this.updateWallpaperStyles()
 				return;
 			}
 		})
@@ -133,6 +134,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			this.preBackgroundBrightness = this.settings.brightness
 			this.preBackgroundColor = this.settings.backgroundColor
 			this.preBackgroundBlending = this.settings.backgroundBlendMode
+			this.updateWallpaperStyles()
 		}
 
 
@@ -467,6 +469,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.setValue(this.plugin.settings.blur.toString())
 			.setPlaceholder("0")
 			.onChange(async value => {
+				if(isNaN(Number(value))) value = "0"
 				if(Number(value) > 100) value = "100"
 				if(Number(value) < 0) value = "0"
 				defaultBlurText.setValue(value)
@@ -501,6 +504,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.setValue(this.plugin.settings.brightness.toString())
 			.setPlaceholder("0")
 			.onChange(async value => {
+				if(isNaN(Number(value))) value = "0"
 				if(Number(value) > 200) value = "200"
 				if(Number(value) < 0) value = "0"
 				defaultBrightnessText.setValue(value)
@@ -868,6 +872,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.setValue("0")
 			.setPlaceholder("0")
 			.onChange(async value => {
+				if(isNaN(Number(value))) value = "0"
 				if(Number(value) > 100) value = "100"
 				if(Number(value) < 0 || value == "") value = "0"
 				backgroundBlurText.setValue(value)
@@ -901,6 +906,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.setValue("0")
 			.setPlaceholder("0")
 			.onChange(async value => {
+				if(isNaN(Number(value))) value = "0"
 				if(Number(value) > 200) value = "100"
 				if(Number(value) < 0 || value == "") value = "0"
 				backgroundBrightnessText.setValue(value)
@@ -1204,6 +1210,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				.setValue(note.backgroundBlur.toString())
 				.setPlaceholder("0")
 				.onChange(async value => {
+					
+					if(isNaN(Number(value))) value = "0"
 					if(Number(value) > 100) value = "100"
 					if(Number(value) < 0) value = "0"
 					backgroundBlurText.setValue(value)
@@ -1237,6 +1245,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				.setValue(note.backgroundBrightness.toString())
 				.setPlaceholder("0")
 				.onChange(async value => {
+					
+					if(isNaN(Number(value))) value = "0"
 					if(Number(value) > 200) value = "100"
 					if(Number(value) < 0) value = "0"
 					backgroundBrightnessText.setValue(value)
