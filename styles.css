@@ -244,16 +244,10 @@ div.odb-lt-wave-effect div.ocean{
 
 }
 
-/*
-.container-item-draggable {
+.dragabble {
   cursor: grab;
-  display: grid;
-  grid-gap: 8px;
-  grid-template-columns: 0.5fr 7fr;
-  align-items: center;
-  border-top: 1px solid var(--background-modifier-border);
 }
-*/
+
 .container-item-draggable {
     display: grid;
     grid-template-columns: repeat(7, 1fr);

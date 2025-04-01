@@ -695,7 +695,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 		const noteBackgroundSetting = containerEl.createEl("div");
 		noteBackgroundSetting.addClass("container-item-draggable");
-		noteBackgroundSetting.addClass("container-item-draggable")
+
 
 		const settingIcon = noteBackgroundSetting.createEl("div");
 		settingIcon.addClass("setting-item-icon");
@@ -996,7 +996,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			ghostClass: "container-sortable-ghost",
 			chosenClass: "container-sortable-chosen",
 			dragClass: "container-sortable-drag",
-			draggable: ".draggable",
+			draggable: ".container-item-draggable",
+			delay: 300,
 			dragoverBubble: true,
 			forceFallback: true,
 			fallbackClass: "container-sortable-fallback",
