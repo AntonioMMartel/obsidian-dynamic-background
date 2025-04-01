@@ -158,13 +158,13 @@ export default class DynamicBackgroundPlugin extends Plugin {
 
 		window.addEventListener('blur', () => {
 			if (this.settings.enableDynamicEffect == true) {
-				this.RemoveDynamicBackgroundEffect(this.settings.dynamicEffect);
+				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect);
 			}
 		});
 		window.addEventListener('focus', () => {
 			if (this.settings.enableDynamicEffect == true) {
-				this.RemoveDynamicBackgroundEffect(this.settings.dynamicEffect);
-				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect);
+				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect);
+				this.AddDynamicBackgroundEffect(this.preDynamicEffect);
 			}
 		});
 	
