@@ -626,10 +626,15 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.addButton(button => {
 				button
 					.setClass("undo-button")
+					.setClass("setting-button")
+					.setClass("color-undo-button")
 					.setIcon("undo-icon")
-					.setTooltip("Undo")
-					//.onClick()
-
+					.setTooltip("Undo color")
+					.onClick(async (button) => {
+						backgroundColorInput.setValue(this.plugin.settings.backgroundColor)
+						backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
+						backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+					})
 			})
 			.addButton((button) => {
 				button
@@ -779,8 +784,24 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		const backgroundColorPickerLabel = backgroundColorPickerSetting.createEl("div")
 		backgroundColorPickerLabel.addClass("setting-item-label")
 		backgroundColorPickerLabel.textContent = "Color Picker"
+
+		const colorButtons = backgroundColorPickerSetting.createEl("div")
+		colorButtons.addClass("color-buttons")
+
+		const colorUndoButton = new ButtonComponent(colorButtons)
+		colorUndoButton
+			.setClass("undo-button")
+			.setClass("setting-button")
+			.setClass("color-undo-button")
+			.setIcon("undo-icon")
+			.setTooltip("Undo color")
+			.onClick(async (button) => {
+				backgroundColorInput.setValue(this.plugin.settings.backgroundColor)
+				backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
+				backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+			})
 		
-		const backgroundColorPicker = new ButtonComponent(backgroundColorPickerSetting)
+		const backgroundColorPicker = new ButtonComponent(colorButtons)
 		backgroundColorPicker
 			.setClass("color-picker")
 			.then(() => {
@@ -1118,8 +1139,24 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			const backgroundColorPickerLabel = backgroundColorPickerSetting.createEl("div")
 			backgroundColorPickerLabel.addClass("setting-item-label")
 			backgroundColorPickerLabel.textContent = "Color Picker"
+
+			const colorButtons = backgroundColorPickerSetting.createEl("div")
+			colorButtons.addClass("color-buttons")
+
+			const colorUndoButton = new ButtonComponent(colorButtons)
+			colorUndoButton
+				.setClass("undo-button")
+				.setClass("setting-button")
+				.setClass("color-undo-button")
+				.setIcon("undo-icon")
+				.setTooltip("Undo color")
+				.onClick(async (button) => {
+					backgroundColorInput.setValue(note.backgroundColor)
+					backgroundColorInput.inputEl.setAttribute("value", note.backgroundColor)
+					backgroundColorInput.inputEl.setAttribute("style", `background-color: ${note.backgroundColor}; color: var(--text-normal);`)
+				})
 			
-			const backgroundColorPicker = new ButtonComponent(backgroundColorPickerSetting)
+			const backgroundColorPicker = new ButtonComponent(colorButtons)
 			backgroundColorPicker
 				.setClass("color-picker")
 				.then(() => {

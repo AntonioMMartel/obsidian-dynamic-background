@@ -441,3 +441,13 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   background-color: color-mix(in srgb, var(--color-red), transparent 10%) !important;
   cursor: pointer
 }
+
+.color-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-undo-button {
+  width: 40px
+}
