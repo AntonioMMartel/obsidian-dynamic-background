@@ -284,7 +284,8 @@ div.odb-lt-wave-effect div.ocean{
 
 .container-sortable-chosen {
   cursor: grabbing;
-  padding: 0 0 0 18px;
+  padding-top: 1em;
+  padding-bottom: 1em;
   background-color: var(--background-primary);
 }
 
