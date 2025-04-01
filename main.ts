@@ -376,7 +376,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			}
 
 		new Setting(containerEl)
-			.setName('Default dynamic Effect')
+			.setName('Default dynamic effect')
 			.setDesc('Select a default dynamic effect')
 			.addDropdown((dropdown) => dropdown
 				.addOptions(defaultDynamicEffects)
@@ -418,7 +418,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		}
 
 		new Setting(containerEl)
-			.setName('Enable Dynamic Effect')
+			.setName('Enable dynamic effect')
 			.setDesc('Enable or disable dynamic effect')
 			.addToggle((tc) => 
 				tc.setValue(this.plugin.settings.enableDynamicEffect)
@@ -437,8 +437,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			);				
 
 		new Setting(containerEl)
-			.setName('Static Wallpaper Image')
-			.setDesc("Image file in Vault. Please use the relative path of the image file inside Vault.")
+			.setName('Default wallpaper image')
+			.setDesc("Path to static image file in Vault. Please use the relative path of the image file inside Vault.")
 			.addTextArea((text) => 
 				text
 				.setValue(this.plugin.settings.backgroundImageFile)
@@ -475,6 +475,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				defaultBlurText.setValue(value)
 				defaultBlurSlider.setValue(Number(value))
 				this.plugin.settings.blur = Number(value);
+				this.plugin.preBackgroundBlur = Number(value);
 				
 				await this.plugin.saveSettings();
 
@@ -486,6 +487,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.setValue(this.plugin.settings.blur)
 			.onChange(async value => {
 				this.plugin.settings.blur = value;
+				this.plugin.preBackgroundBlur = value;
 				defaultBlurText.setValue(value.toString())
 				await this.plugin.saveSettings();
 				this.plugin.updateWallpaperStyles();
@@ -510,6 +512,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				defaultBrightnessText.setValue(value)
 				defaultBrightnessSlider.setValue(Number(value))
 				this.plugin.settings.brightness = Number(value);
+				this.plugin.preBackgroundBrightness = Number(value);
 				
 				await this.plugin.saveSettings();
 
@@ -521,6 +524,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			.setValue(this.plugin.settings.brightness)
 			.onChange(async value => {
 				this.plugin.settings.brightness = value;
+				this.plugin.preBackgroundBrightness = value;
 				defaultBrightnessText.setValue(value.toString())
 				await this.plugin.saveSettings();
 
@@ -630,7 +634,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					.setClass("color-undo-button")
 					.setIcon("undo-icon")
 					.setTooltip("Undo color")
-					.onClick(async (button) => {
+					.onClick((button) => {
 						backgroundColorInput.setValue(this.plugin.settings.backgroundColor)
 						backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
 						backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
@@ -642,9 +646,10 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					.setIcon("save-icon")
 					.setTooltip("Save")
 					.onClick(async (buttonEl : any) => {						
-						await this.plugin.saveSettings()
 						this.plugin.settings.backgroundColor = defaultBackgroundColorInput.inputEl.value
 						this.plugin.saveData(this.plugin.settings)
+						await this.plugin.saveSettings()
+						this.plugin.preBackgroundColor = defaultBackgroundColorInput.inputEl.value
 						this.plugin.updateWallpaperStyles();
 						new Notice("Default color set and saved successfully")
 			})
@@ -685,6 +690,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.backgroundBlendMode)
 				.onChange(async (value) => {
 					this.plugin.settings.backgroundBlendMode = value;
+					this.plugin.preBackgroundBlending = value
 					await this.plugin.saveSettings();
 					this.plugin.updateWallpaperStyles();
 				})
@@ -694,8 +700,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 		const noteBackgroundInfo = new Setting(containerEl)
 		noteBackgroundInfo
-			.setName('Add dynamic effect to note')
-			.setDesc('Set specific dynamic effect and background for notes in specific path. Paths should include the file extension. Eg: note.md')
+			.setName('Add background settings to note')
+			.setDesc('Set specific dynamic effect and background for notes in a specific path. Paths should include the file extension. Eg: note.md')
 			.setClass("note-background-settings")
 
 		const noteBackgroundSetting = containerEl.createEl("div");
@@ -1004,8 +1010,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		const noteBackgroundListInfo = new Setting(containerEl)
 
 		noteBackgroundListInfo
-			.setName('Note dynamic effects list')
-			.setDesc('View or change saved dynamic effects and backgrounds for notes')
+			.setName('Note background settings list')
+			.setDesc('View or change background settings for notes')
 			.setClass("note-background-settings")
 		
 		const pathsContainer = containerEl.createEl("div", {
