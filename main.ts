@@ -128,6 +128,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			this.SetDynamicBackgroundContainerBgProperty()
 			this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
 			this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
+			this.preDynamicEffect = this.settings.dynamicEffect
 			this.preBackgroundBlur = this.settings.blur
 			this.preBackgroundBrightness = this.settings.brightness
 			this.preBackgroundColor = this.settings.backgroundColor
