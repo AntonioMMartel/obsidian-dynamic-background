@@ -59,6 +59,10 @@ export default class DynamicBackgroundPlugin extends Plugin {
 	settings: DynamicBackgroundPluginSettings;
 	preDynamicEffect: DynamicEffectEnum;
 	preBackgroudImageFile: string;
+	preBackgroundColor: string;
+	preBackgroundBlur: number;
+	preBackgroundBrightness: number;
+	preBackgroundBlending: string;
 	dynamicBackgroundContainer: HTMLDivElement|null;
 	wallpaperCover: HTMLDivElement;
 	
@@ -82,7 +86,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		this.app.workspace.on('file-open', async () => {
 			const file = this.app.workspace.getActiveFile()
 			if(file){
-				await this.setFileBackground(file)
+				await this.setFileBackgroundData(file)
 			}
 		})
 
@@ -95,26 +99,39 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		this.RemoveDynamicBackgroundContainer();
 	}
 
-	async setFileBackground(file: TFile) {
-		let backgroundChanged: Boolean = true
-		this.settings.notesBackgroundMap.forEach((notePath) => {
-			if(file.path.contains(notePath.notePath) || file.path == notePath.notePath) {
-				if(!(notePath.backgroundPath == "")){
-					this.SetDynamicBackgroundContainerBgProperty(notePath.backgroundPath)
+	async setFileBackgroundData(file: TFile) {
+		let useDefaults: Boolean = true
+		this.settings.notesBackgroundMap.forEach((note) => {
+			// Found in settings
+			if(file.path.contains(note.notePath) || file.path == note.notePath) {
+				// background
+				if(!(note.backgroundPath == "")){
+					this.SetDynamicBackgroundContainerBgProperty(note.backgroundPath)
 				}
+
+				// dynamic effect
 				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
-				this.AddDynamicBackgroundEffect(Number(notePath.dynamicEffect))
-				this.preDynamicEffect = Number(notePath.dynamicEffect)
-				backgroundChanged = false
+				this.AddDynamicBackgroundEffect(Number(note.dynamicEffect))
+				this.preDynamicEffect = Number(note.dynamicEffect)
+				useDefaults = false
+
+				// color
+				this.preBackgroundBlur = note.backgroundBlur
+				this.preBackgroundBrightness = note.backgroundBrightness
+				this.preBackgroundColor = note.backgroundColor
+				this.preBackgroundBlending = note.backgroundBlend
 				return;
 			}
 		})
 		// Default
-		if(backgroundChanged) {
+		if(useDefaults) {
 			this.SetDynamicBackgroundContainerBgProperty()
 			this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
 			this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
-			this.preDynamicEffect = this.settings.dynamicEffect
+			this.preBackgroundBlur = this.settings.blur
+			this.preBackgroundBrightness = this.settings.brightness
+			this.preBackgroundColor = this.settings.backgroundColor
+			this.preBackgroundBlending = this.settings.backgroundBlendMode
 		}
 
 
@@ -157,10 +174,10 @@ export default class DynamicBackgroundPlugin extends Plugin {
 	}
 
 	updateWallpaperStyles(){
-		let value = "blur("+this.settings.blur.toString()+"px) brightness("+this.settings.brightness.toString()+"%)";
+		let value = "blur("+this.preBackgroundBlur.toString()+"px) brightness("+this.preBackgroundBrightness.toString()+"%)";
 		this.wallpaperCover.style.setProperty("filter",value);
-		this.wallpaperCover.style.setProperty("background-blend-mode", this.settings.backgroundBlendMode);
-		this.wallpaperCover.style.setProperty("background-color", this.settings.backgroundColor);
+		this.wallpaperCover.style.setProperty("background-blend-mode", this.preBackgroundBlending);
+		this.wallpaperCover.style.setProperty("background-color", this.preBackgroundColor);
 	}
 
 	RemoveDynamicBackgroundContainer(){
@@ -526,7 +543,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				defaultBackgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
 			})
 		
-
+		addIcon("undo-icon", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" style="--darkreader-inline-stroke: currentColor;" data-darkreader-inline-stroke=""> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg> `)
 		addIcon("save-icon",'<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="#ffffff"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>')
 
 		defaultBackgroundColorSetting
@@ -600,6 +617,14 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					instance.hide();
 					instance.addSwatch(color.toHEXA().toString());
 				});
+			})
+			.addButton(button => {
+				button
+					.setClass("undo-button")
+					.setIcon("undo-icon")
+					.setTooltip("Undo")
+					//.onClick()
+
 			})
 			.addButton((button) => {
 				button
@@ -1231,7 +1256,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 			
 			// undo button
 			const undoButton = new ButtonComponent(buttonsContainer)
-			addIcon("undo-icon", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" style="--darkreader-inline-stroke: currentColor;" data-darkreader-inline-stroke=""> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg> `)
 			undoButton
 				.setClass("undo-button")
 				.setClass("setting-button")
