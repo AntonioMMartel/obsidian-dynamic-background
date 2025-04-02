@@ -86,13 +86,18 @@ export default class DynamicBackgroundPlugin extends Plugin {
 				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect);
 				this.preDynamicEffect = this.settings.dynamicEffect
 			}
+			// Ensure opened file has its settings set
+			const file = this.app.workspace.getActiveFile()
+			if(file && (this.wallpaperCover != undefined)){
+				this.setFileBackgroundData(file)
+			}
 		});
 
 		// File open
-		this.app.workspace.on('file-open', async () => {
+		this.app.workspace.on('file-open', () => {
 			const file = this.app.workspace.getActiveFile()
-			if(file){
-				await this.setFileBackgroundData(file)
+			if(file && (this.wallpaperCover != undefined)){
+				this.setFileBackgroundData(file)
 			}
 		})
 
@@ -112,14 +117,16 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			if(file.path.contains(note.notePath) || file.path == note.notePath) {
 				// background
 				if(!(note.backgroundPath == "")){
-					this.SetDynamicBackgroundContainerBgProperty(note.backgroundPath)
+					this.SetDynamicBackgroundContainerBgProperty(
+						note.backgroundPath, 
+						Number(note.dynamicEffect)
+					)
 				}
 
 				// dynamic effect
 				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
 				this.AddDynamicBackgroundEffect(Number(note.dynamicEffect))
 				this.preDynamicEffect = Number(note.dynamicEffect)
-				useDefaults = false
 
 				// color
 				this.preBackgroundBlur = note.backgroundBlur
@@ -127,6 +134,8 @@ export default class DynamicBackgroundPlugin extends Plugin {
 				this.preBackgroundColor = note.backgroundColor
 				this.preBackgroundBlending = note.backgroundBlend
 				this.updateWallpaperStyles()
+
+				useDefaults = false
 				return;
 			}
 		})
@@ -156,31 +165,31 @@ export default class DynamicBackgroundPlugin extends Plugin {
 	}
 
 	AddDynamicBackgroundContainer(){
-  	let div_root = this.app.workspace.containerEl.find("div.workspace > div.mod-root");
+  		let div_root = this.app.workspace.containerEl.find("div.workspace > div.mod-root");
 		
 		this.dynamicBackgroundContainer = null;
 
-  	if (div_root) {
+		if (div_root) {
 
-		window.addEventListener('blur', () => {
-			if (this.settings.enableDynamicEffect == true) {
-				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect);
-			}
-		});
-		window.addEventListener('focus', () => {
-			if (this.settings.enableDynamicEffect == true) {
-				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect);
-				this.AddDynamicBackgroundEffect(this.preDynamicEffect);
-			}
-		});
-	
-    	this.dynamicBackgroundContainer = div_root.createEl("div", { cls: "rh-obsidian-dynamic-background-container" });
+			window.addEventListener('blur', () => {
+				if (this.settings.enableDynamicEffect == true) {
+					this.RemoveDynamicBackgroundEffect(this.preDynamicEffect);
+				}
+			});
+			window.addEventListener('focus', () => {
+				if (this.settings.enableDynamicEffect == true) {
+					this.RemoveDynamicBackgroundEffect(this.preDynamicEffect);
+					this.AddDynamicBackgroundEffect(this.preDynamicEffect);
+				}
+			});
+		
+			this.dynamicBackgroundContainer = div_root.createEl("div", { cls: "rh-obsidian-dynamic-background-container" });
 
 			this.wallpaperCover = this.dynamicBackgroundContainer.createEl("div", { cls: "rh-wallpaper-cover" });
 
 			this.updateWallpaperStyles()
-  		}
-	}
+		}
+	}	
 
 	updateWallpaperStyles(){
 		let value = "blur("+this.preBackgroundBlur.toString()+"px) brightness("+this.preBackgroundBrightness.toString()+"%)";
@@ -197,10 +206,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		}
 	}
 
-
-
-
-	async SetDynamicBackgroundContainerBgProperty(imagePath = this.settings.backgroundImageFile){
+	async SetDynamicBackgroundContainerBgProperty(imagePath = this.settings.backgroundImageFile, dynamicEffect = this.settings.dynamicEffect){
 		if (this.dynamicBackgroundContainer == null)
 			return;
 
@@ -234,7 +240,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			if(this.settings.enableDynamicEffect == false)
 				return;
 
-			switch(this.settings.dynamicEffect){
+			switch(dynamicEffect){
 				case DynamicEffectEnum.Dark_StarSky:
 					break;
 				case DynamicEffectEnum.Dark_Snow:
@@ -1058,12 +1064,11 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 			if(fs.existsSync(vaultPath + "/" + note.notePath)) {
 				if (fs.lstatSync(vaultPath + "/" + note.notePath).isDirectory()) {
-				// Folder
+					// Folder
 					settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>` 
 				}
-			} else if (fs.existsSync(vaultPath + "/" + note.notePath)) {
 				if (fs.lstatSync(vaultPath + "/" + note.notePath).isFile()) {
-				// File
+					// File
 					settingIcon.innerHTML = `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /></svg>`	
 				}
 			} else {
