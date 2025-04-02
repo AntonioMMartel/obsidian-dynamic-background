@@ -635,9 +635,9 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					.setIcon("undo-icon")
 					.setTooltip("Undo color")
 					.onClick((button) => {
-						backgroundColorInput.setValue(this.plugin.settings.backgroundColor)
-						backgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
-						backgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
+						defaultBackgroundColorInput.setValue(this.plugin.settings.backgroundColor)
+						defaultBackgroundColorInput.inputEl.setAttribute("value", this.plugin.settings.backgroundColor)
+						defaultBackgroundColorInput.inputEl.setAttribute("style", `background-color: ${this.plugin.settings.backgroundColor}; color: var(--text-normal);`)
 					})
 			})
 			.addButton((button) => {
