@@ -68,8 +68,14 @@ export default class DynamicBackgroundPlugin extends Plugin {
 	
 	async onload() {
 		console.log("loading dynamic background plugin...");
-		this.preDynamicEffect = DynamicEffectEnum.Unknown;
 		await this.loadSettings();
+
+		this.preDynamicEffect = DynamicEffectEnum.Unknown;
+		this.preBackgroudImageFile = this.settings.backgroundImageFile;
+		this.preBackgroundColor = this.settings.backgroundColor;
+		this.preBackgroundBlur = this.settings.blur;
+		this.preBackgroundBrightness = this.settings.brightness;
+		this.preBackgroundBlending = this.settings.backgroundBlendMode;
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new DynamicBackgroundSettingTab(this.app, this));
 		// Layout
@@ -178,7 +184,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 
 	updateWallpaperStyles(){
 		let value = "blur("+this.preBackgroundBlur.toString()+"px) brightness("+this.preBackgroundBrightness.toString()+"%)";
-		this.wallpaperCover.style.setProperty("filter",value);
+		this.wallpaperCover.style.setProperty("filter", value);
 		this.wallpaperCover.style.setProperty("background-blend-mode", this.preBackgroundBlending);
 		this.wallpaperCover.style.setProperty("background-color", this.preBackgroundColor);
 	}
