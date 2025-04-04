@@ -81,11 +81,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		this.app.workspace.onLayoutReady(() => {
 			this.AddDynamicBackgroundContainer();
 			this.SetDynamicBackgroundContainerBgProperty();
-			if(this.settings.enableDynamicEffect == true){
-				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect);
-				this.preDynamicEffect = this.settings.dynamicEffect
-			}
-			// Ensure opened file has its settings set
+
 			const file = this.app.workspace.getActiveFile()
 			if(file && (this.dynamicBackgroundContainer != undefined)){
 				this.setFileBackgroundData(file)
@@ -121,11 +117,12 @@ export default class DynamicBackgroundPlugin extends Plugin {
 						Number(note.dynamicEffect)
 					)
 				}
-
-				// dynamic effect
-				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
-				this.AddDynamicBackgroundEffect(Number(note.dynamicEffect))
-				this.preDynamicEffect = Number(note.dynamicEffect)
+				if(this.settings.enableDynamicEffect == true){
+					// dynamic effect
+					this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
+					this.AddDynamicBackgroundEffect(Number(note.dynamicEffect))
+					this.preDynamicEffect = Number(note.dynamicEffect)
+				}
 
 				// color
 				this.preBackgroundBlur = note.backgroundBlur
@@ -141,9 +138,13 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		// Default
 		if(useDefaults) {
 			this.SetDynamicBackgroundContainerBgProperty()
-			this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
-			this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
-			this.preDynamicEffect = this.settings.dynamicEffect
+			if(this.settings.enableDynamicEffect == true){
+				// dynamic effect
+				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
+				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
+				this.preDynamicEffect = this.settings.dynamicEffect
+			}
+
 			this.preBackgroundBlur = this.settings.blur
 			this.preBackgroundBrightness = this.settings.brightness
 			this.preBackgroundColor = this.settings.backgroundColor
@@ -399,10 +400,16 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 				
 					await this.plugin.saveSettings();
 
+	
 					this.plugin.RemoveDynamicBackgroundEffect(this.plugin.preDynamicEffect);
 
-					if (this.plugin.settings.enableDynamicEffect == true)
-						this.plugin.AddDynamicBackgroundEffect(this.plugin.settings.dynamicEffect);
+					if (this.plugin.settings.enableDynamicEffect == true) {
+						const file = this.app.workspace.getActiveFile()
+						if(file && (this.plugin.dynamicBackgroundContainer != undefined)){
+							this.plugin.setFileBackgroundData(file)
+						}
+					}
+
 
 					this.plugin.SetDynamicBackgroundContainerBgProperty();
 
@@ -442,7 +449,12 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						this.plugin.RemoveDynamicBackgroundEffect(this.plugin.settings.dynamicEffect);
 					}
 					else{
-						this.plugin.AddDynamicBackgroundEffect(this.plugin.settings.dynamicEffect);
+						const file = this.app.workspace.getActiveFile()
+						if(file && (this.plugin.dynamicBackgroundContainer != undefined)){
+							this.plugin.setFileBackgroundData(file)
+						} else {
+							this.plugin.AddDynamicBackgroundEffect(this.plugin.settings.dynamicEffect)
+						}
 					}
 				})
 			);				
