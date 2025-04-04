@@ -64,7 +64,6 @@ export default class DynamicBackgroundPlugin extends Plugin {
 	preBackgroundBrightness: number;
 	preBackgroundBlending: string;
 	dynamicBackgroundContainer: HTMLDivElement|null;
-	wallpaperCover: HTMLDivElement;
 	
 	async onload() {
 		console.log("loading dynamic background plugin...");
@@ -88,7 +87,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 			}
 			// Ensure opened file has its settings set
 			const file = this.app.workspace.getActiveFile()
-			if(file && (this.wallpaperCover != undefined)){
+			if(file && (this.dynamicBackgroundContainer != undefined)){
 				this.setFileBackgroundData(file)
 			}
 		});
@@ -96,7 +95,7 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		// File open
 		this.app.workspace.on('file-open', () => {
 			const file = this.app.workspace.getActiveFile()
-			if(file && (this.wallpaperCover != undefined)){
+			if(file && (this.dynamicBackgroundContainer != undefined)){
 				this.setFileBackgroundData(file)
 			}
 		})
@@ -185,17 +184,17 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		
 			this.dynamicBackgroundContainer = div_root.createEl("div", { cls: "rh-obsidian-dynamic-background-container" });
 
-			this.wallpaperCover = this.dynamicBackgroundContainer.createEl("div", { cls: "rh-wallpaper-cover" });
-
 			this.updateWallpaperStyles()
 		}
 	}	
 
 	updateWallpaperStyles(){
 		let value = "blur("+this.preBackgroundBlur.toString()+"px) brightness("+this.preBackgroundBrightness.toString()+"%)";
-		this.wallpaperCover.style.setProperty("filter", value);
-		this.wallpaperCover.style.setProperty("background-blend-mode", this.preBackgroundBlending);
-		this.wallpaperCover.style.setProperty("background-color", this.preBackgroundColor);
+		if (this.dynamicBackgroundContainer != null) {
+			this.dynamicBackgroundContainer.style.setProperty("filter", value);
+			this.dynamicBackgroundContainer.style.setProperty("background-blend-mode", this.preBackgroundBlending);
+			this.dynamicBackgroundContainer.style.setProperty("background-color", this.preBackgroundColor);
+		}
 	}
 
 	RemoveDynamicBackgroundContainer(){
