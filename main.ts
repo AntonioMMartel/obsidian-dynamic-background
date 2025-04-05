@@ -439,7 +439,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Enable dynamic effect')
-			.setDesc('Enable or disable dynamic effect')
+			.setDesc('Enable or disable dynamic effect. Affects both dynamic effects in setting list and default settings')
 			.addToggle((tc) => 
 				tc.setValue(this.plugin.settings.enableDynamicEffect)
 				.onChange(async(value) => {
@@ -558,10 +558,10 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 		const defaultBackgroundColorSetting = new Setting(containerEl)
 		defaultBackgroundColorSetting
-			.setName("Background blend color")
+			.setName("Default background blend color")
 			.setClass("color-setting")
 			.setDesc(
-				`Select the color using the color picker to set its hex code value`
+				`Select the default background color using the color picker to set its hex code value`
 			);
 		const defaultBackgroundColorInput = new TextComponent(defaultBackgroundColorSetting.controlEl);
     	defaultBackgroundColorInput.inputEl.addClass("color-setting-value");
@@ -700,14 +700,14 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 		}
 
 		const backgroundBlendModeDescription = new DocumentFragment()
-		backgroundBlendModeDescription.appendText("Check the multiple modes here: ")
+		backgroundBlendModeDescription.appendText("Set the background blend mode. Try them out here: ")
 		backgroundBlendModeDescription.createEl("a", {
 			text: "Playcss - Background blend mode",
 			href: "https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode",
 		});
 		
 		new Setting(containerEl)
-			.setName('Background Blending Mode')
+			.setName('Default background blending mode')
 			.setDesc(backgroundBlendModeDescription)
 			.addDropdown((dropdown) => 
 			dropdown
