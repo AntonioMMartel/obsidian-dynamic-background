@@ -396,6 +396,18 @@ button:not(.mod-cta):not(.mod-warning).settings-button.delete-settings-button:ho
   align-items: center;
 }
 
+@media screen and (max-width: 1200px) {
+  .slider-brightness-setting {
+    grid-column: span 3 / span 3;
+    grid-column-start: 4;
+  }
+  
+  .slider-blur-setting {
+    grid-column: span 3 / span 3;
+    grid-column-start: 2;
+  }
+}
+
 .slider-item-container {
   padding-top: 0.5em;
   padding-left: 0.5em;
