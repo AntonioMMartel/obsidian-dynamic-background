@@ -1373,7 +1373,6 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					let notePath = notePathSettingInput.value
 					if (notePath) {
 						const modifyIndex:number = this.plugin.settings.notesBackgroundMap.findIndex(notes => notes.index == note.index) 
-						console.log(this.plugin.settings.notesBackgroundMap[modifyIndex])
 						this.plugin.settings.notesBackgroundMap[modifyIndex] =
 						{
 							"index": note.index,
