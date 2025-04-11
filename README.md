@@ -135,7 +135,10 @@ Now we can adjust more settings
 
 ### Brightness setting
 
-[Open the plugin's settings window](#open-setting-window), Set the brightness value, 0 will make the background completely dark, 100 will make it have its normal brightness, 200 will make your eyes cry. The brightness effect is shown as follows:
+[Open the plugin's settings window](#open-setting-window) and set the brightness value
+- 0 will make the background completely dark
+- 100 will make it have its normal brightness
+- 200 will make your eyes cry
 
 **Brightness: 10**
 
@@ -150,8 +153,9 @@ Now we can adjust more settings
 ![Brightness 100](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/brightness-example-100.PNG)
 
 ### Color setting + blend mode
-
-Your can change the wallpaper color using the color picker (or by inputting the hexcode directly). The normal blending mode **does not** apply the color to the background. There are 15 different blending modes and some can be tried out here: [Playcss - Background blending modes](https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode)
+- Your can change the wallpaper color using the color picker (or by inputting the hexcode directly).
+- The normal blending mode **does not** apply the color to the background.
+- There are 15 different blending modes and some can be tried out here: [Playcss - Background blending modes](https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode)
 
 **Color picker**
 ![Color picker](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/color-picker.PNG)
@@ -177,41 +181,40 @@ Your can change the wallpaper color using the color picker (or by inputting the 
 ![Wolf violet multiply](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/wolf-wallpaper-violet-multiply-blur-5.PNG)
 
 ### Set specific background and dynamic effect to a note
-You can now set individual wallpapers and dynamic effects to your notes. 
+- You can now set individual wallpapers and dynamic effects to your notes. 
 
 **Add background settings to note**
-With a reset button if you want to start over or the save button to save the settings
+- With a reset button if you want to start over or the save button to save the settings
 - Dont forget that full file extensions must be used. Example: `mycoolnote.md` or `verycoolbackground.jpg`
 
 ![Add settings preview](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/add-note-settiing.PNG)
 
 **Background settings list**
-This is where you will see all the settings that you have saved across your notes. You can change them to your hearts contempt and save if you are happy or undo your changes if you are not. 
+- This is where you will see all the settings that you have saved across your notes.
+- You can change them to your hearts contempt and save if you are happy or undo your changes if you are not. 
 
 ![Settings list preview](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/settings-list-preview.PNG)
 
 **Settings list priority**
-Want to stack multiple settings because **aesthetics**? Then you must know how the settings list prioritizes one setting over the other.
-- The lower it is in the list the higher priority the setting has
+- Want to stack multiple settings because **aesthetics**? Then you must know how the settings list prioritizes one setting over the other.
+- The lower the setting is in the list the higher priority it will have
 
 ![Priorities example](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/note-path-priority-example.PNG)
 
-**Example of correct settings**
-Here we have several stacked settings:
+**Example of correct settings where we have several stacked settings**:
 - Folder: A folder filled with notes that will have image.png as background
 - Folder/coolnote.md: A note inside Folder that will have a different image from all the other images in folder
 - Folder/AnotherFolder: A folder that will have different settings from Folder
 
 ![Priorities correct](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/priorities-example.PNG)
 
-**Example of incorrect settings**
-The same stacked settings:
+**Example of incorrect settings using the same stacked settings**:
 - But now the setting of Folder/AnotherFolder is overriden by that of Folder
 
 ![Priorities wrong](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/priorities-wrong-example.PNG)
 
 **The settings list is draggable**
-Pressing the left mouse button for more than half a second will make it so that the note setting is draggable and moved to another position in the list
+- Pressing the left mouse button for more than half a second will make it so that the note setting is draggable and moved to another position in the list
 
 
 ## How to Install
