@@ -1,4 +1,4 @@
-# Dynamic Background Plugin
+![image](https://github.com/user-attachments/assets/f96e5c3b-ff18-4a5b-8c30-affff5b58a53)# Dynamic Background Plugin
 
 An [Obsidian](https://obsidian.md) plugin for adding dynamic effects and/or static wallpapers for Obsidian background.
 
@@ -124,21 +124,95 @@ You can specify a image file inside Vault as the wallpaper, please use the relat
 
 ## New features
 
+### Improved settings
+Now we can adjust more settings
+- Color
+- Brightness
+- Background blending
+- Individual settings for notes
+
+![New settings](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/new-settings.PNG)
+
 ### Brightness setting
 
 [Open the plugin's settings window](#open-setting-window), Set the brightness value, 0 will make the background completely dark, 100 will make it have its normal brightness, 200 will make your eyes cry. The brightness effect is shown as follows:
 
 **Brightness: 10**
 
-![Brightness 10](https://github.com/AntonioMMartel/obsidian-dynamic-background/edit/master/assets/brightness-example-10.PNG)
+![Brightness 10](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/brightness-example-10.PNG)
 
 **Brightness: 50**
 
-![Brightness 50](https://github.com/AntonioMMartel/obsidian-dynamic-background/edit/master/assets/brightness-example-50.PNG)
+![Brightness 50](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/brightness-example-50.PNG)
 
 **Brightness: 100**
 
-![Brightness 100](https://github.com/AntonioMMartel/obsidian-dynamic-background/edit/master/assets/brightness-example-100.PNG)
+![Brightness 100](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/brightness-example-100.PNG)
+
+### Color setting + blend mode
+
+Your can change the wallpaper color using the color picker (or by inputting the hexcode directly). The normal blending mode **does not** apply the color to the background. There are 15 different blending modes and some can be tried out here: [Playcss - Background blending modes](https://www.w3schools.com/cssref/playdemo.php?filename=playcss_background-blend-mode)
+
+**Color picker**
+![Color picker](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/color-picker.PNG)
+
+**Select blending mode**
+
+**Beach wallpaper with no color (brightness: 35, blur: 5)**
+![Beach normal](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/beach-wallpaper-normal.PNG)
+
+**Beach wallpaper with yellow color and hard light blending (brightness: 35, blur: 5)**
+![Beach yellow hard light](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/beach-wallpaper-yellow-hard-light.PNG)
+
+**Beach wallpaper with blue color and multiply blending (brightness: 35, blur: 5)**
+![Beach blue multiply](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/beach-wallpaper-multiply-blue.PNG)
+
+**Wolf wallpaper with no color (brightness: 35, blur: 0)**
+![Wolf normal](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/wolf-wallpaper-normal.PNG)
+
+**Wolf wallpaper with yellow color and hard-light blending (brightness: 35, blur: 0)**
+![Wolf yellow hard-light](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/wolf-wallpaper-yellow-hard-light.PNG)
+
+**Wolf wallpaper with violet color and multiply blending (brightness: 35, blur: 5)**
+![Wolf violet multiply](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/wolf-wallpaper-violet-multiply-blur.PNG)
+
+### Set specific background and dynamic effect to a note
+You can now set individual wallpapers and dynamic effects to your notes. 
+
+**Add background settings to note**
+With a reset button if you want to start over or the save button to save the settings
+- Dont forget that full file extensions must be used. Example: `mycoolnote.md` or `verycoolbackground.jpg`
+
+![Add settings preview](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/add-note-setting.PNG)
+
+**Background settings list**
+This is where you will see all the settings that you have saved across your notes. You can change them to your hearts contempt and save if you are happy or undo your changes if you are not. 
+
+![Settings list preview](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/settings-list-preview.PNG)
+
+**Settings list priority**
+Want to stack multiple settings because **aesthetics**? Then you must know how the settings list prioritizes one setting over the other.
+- The lower it is in the list the higher priority the setting has
+
+![Priorities example](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/note-path-priority-example.PNG)
+
+**Example of correct settings**
+Here we have several stacked settings:
+- Folder: A folder filled with notes that will have image.png as background
+- Folder/coolnote.md: A note inside Folder that will have a different image from all the other images in folder
+- Folder/AnotherFolder: A folder that will have different settings from Folder
+
+![Priorities correct](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/priorities-example.PNG)
+
+**Example of incorrect settings**
+The same stacked settings:
+- But now the setting of Folder/AnotherFolder is overriden by that of Folder
+
+![Priorities wrong](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/priorities-wrong-example.PNG)
+
+**The settings list is draggable**
+Pressing the left mouse button for more than half a second will make it so that the note setting is draggable and moved to another position in the list
+
 
 ## How to Install
 
@@ -164,6 +238,14 @@ From Obsidian, you can activate this plugin within Obsidian by doing the followi
 - Reload Obsidian
 
 ## Version History
+
+### 1.1.0
+- Feature where user can set specific background settings for notes
+- Improved settings menu (+color picker, +sortable list, +text input in sliders)
+
+### 1.0.7
+- Merge dangtrivan code
+- Implementation and configurable settings for color, color blending and brightness
 
 ### 1.0.6
 
