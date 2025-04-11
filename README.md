@@ -174,7 +174,7 @@ Your can change the wallpaper color using the color picker (or by inputting the 
 ![Wolf yellow hard-light](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/wolf-wallpaper-yellow-hard-light.PNG)
 
 **Wolf wallpaper with violet color and multiply blending (brightness: 35, blur: 5)**
-![Wolf violet multiply](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/wolf-wallpaper-violet-multiply-blur.PNG)
+![Wolf violet multiply](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/wolf-wallpaper-violet-multiply-blur-5.PNG)
 
 ### Set specific background and dynamic effect to a note
 You can now set individual wallpapers and dynamic effects to your notes. 
@@ -183,7 +183,7 @@ You can now set individual wallpapers and dynamic effects to your notes.
 With a reset button if you want to start over or the save button to save the settings
 - Dont forget that full file extensions must be used. Example: `mycoolnote.md` or `verycoolbackground.jpg`
 
-![Add settings preview](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/add-note-setting.PNG)
+![Add settings preview](https://raw.githubusercontent.com/AntonioMMartel/obsidian-dynamic-background/master/assets/add-note-settiing.PNG)
 
 **Background settings list**
 This is where you will see all the settings that you have saved across your notes. You can change them to your hearts contempt and save if you are happy or undo your changes if you are not. 
@@ -266,6 +266,11 @@ From Obsidian, you can activate this plugin within Obsidian by doing the followi
 ### 1.0.2
 
 - Initial version
+
+## Contributions
+- [samuelsong70](https://github.com/samuelsong70): Main plugin features
+- [dangtrivan15](https://github.com/dangtrivan15): Color, color blending and brightness
+- [AntonioMMartel](https://github.com/AntonioMMartel): Background settings for individual notes and improved settings 
 
 ## Support
 
