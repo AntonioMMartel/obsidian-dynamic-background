@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/f96e5c3b-ff18-4a5b-8c30-affff5b58a53)# Dynamic Background Plugin
+# Dynamic Background Plugin
 
 An [Obsidian](https://obsidian.md) plugin for adding dynamic effects and/or static wallpapers for Obsidian background.
 
