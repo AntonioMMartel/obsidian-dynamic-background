@@ -122,6 +122,24 @@ You can specify a image file inside Vault as the wallpaper, please use the relat
 
 ![Wallpaper blur 10](https://raw.githubusercontent.com/samuelsong70/obsidian-dynamic-background/master/assets/wallpaper-blur-10.png)
 
+## New features
+
+### Brightness setting
+
+[Open the plugin's settings window](#open-setting-window), Set the brightness value, 0 will make the background completely dark, 100 will make it have its normal brightness, 200 will make your eyes cry. The brightness effect is shown as follows:
+
+**Brightness: 10**
+
+![Brightness 10](https://github.com/AntonioMMartel/obsidian-dynamic-background/edit/master/assets/brightness-example-10.PNG)
+
+**Brightness: 50**
+
+![Brightness 50](https://github.com/AntonioMMartel/obsidian-dynamic-background/edit/master/assets/brightness-example-50.PNG)
+
+**Brightness: 100**
+
+![Brightness 100](https://github.com/AntonioMMartel/obsidian-dynamic-background/edit/master/assets/brightness-example-100.PNG)
+
 ## How to Install
 
 ### From within Obsidian
