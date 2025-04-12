@@ -82,19 +82,13 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		this.app.workspace.onLayoutReady(() => {
 			this.AddDynamicBackgroundContainer();
 			this.SetDynamicBackgroundContainerBgProperty();
+			this.setFileBackgroundData()
 
-			const file = this.app.workspace.getActiveFile()
-			if(file && (this.wallpaperCover != undefined)){
-				this.setFileBackgroundData(file)
-			}
 		});
 
 		// File open
 		this.app.workspace.on('file-open', () => {
-			const file = this.app.workspace.getActiveFile()
-			if(file && (this.wallpaperCover != undefined)){
-				this.setFileBackgroundData(file)
-			}
+			this.setFileBackgroundData()
 		})
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
@@ -106,54 +100,55 @@ export default class DynamicBackgroundPlugin extends Plugin {
 		this.RemoveDynamicBackgroundContainer();
 	}
 
-	async setFileBackgroundData(file: TFile) {
-		let useDefaults: Boolean = true
-		this.settings.notesBackgroundMap.forEach((note) => {
-			// Found in settings
-			if(file.path.contains(note.notePath) || file.path == note.notePath) {
-				// background
-				if(!(note.backgroundPath == "")){
-					this.SetDynamicBackgroundContainerBgProperty(
-						note.backgroundPath, 
-						Number(note.dynamicEffect)
-					)
+	async setFileBackgroundData() {
+		const file = this.app.workspace.getActiveFile()
+		if(file && (this.wallpaperCover != undefined)) {
+			let useDefaults: Boolean = true
+			this.settings.notesBackgroundMap.forEach((note) => {
+				// Found in settings
+				if(file.path.contains(note.notePath) || file.path == note.notePath) {
+					// background
+					if(!(note.backgroundPath == "")){
+						this.SetDynamicBackgroundContainerBgProperty(
+							note.backgroundPath, 
+							Number(note.dynamicEffect)
+						)
+					}
+					if(this.settings.enableDynamicEffect == true){
+						// dynamic effect
+						this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
+						this.AddDynamicBackgroundEffect(Number(note.dynamicEffect))
+						this.preDynamicEffect = Number(note.dynamicEffect)
+					}
+
+					// color
+					this.preBackgroundBlur = note.backgroundBlur
+					this.preBackgroundBrightness = note.backgroundBrightness
+					this.preBackgroundColor = note.backgroundColor
+					this.preBackgroundBlending = note.backgroundBlend
+					this.updateWallpaperStyles()
+
+					useDefaults = false
+					return;
 				}
+			})
+			// Default
+			if(useDefaults) {
+				this.SetDynamicBackgroundContainerBgProperty()
 				if(this.settings.enableDynamicEffect == true){
 					// dynamic effect
 					this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
-					this.AddDynamicBackgroundEffect(Number(note.dynamicEffect))
-					this.preDynamicEffect = Number(note.dynamicEffect)
+					this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
+					this.preDynamicEffect = this.settings.dynamicEffect
 				}
 
-				// color
-				this.preBackgroundBlur = note.backgroundBlur
-				this.preBackgroundBrightness = note.backgroundBrightness
-				this.preBackgroundColor = note.backgroundColor
-				this.preBackgroundBlending = note.backgroundBlend
+				this.preBackgroundBlur = this.settings.blur
+				this.preBackgroundBrightness = this.settings.brightness
+				this.preBackgroundColor = this.settings.backgroundColor
+				this.preBackgroundBlending = this.settings.backgroundBlendMode
 				this.updateWallpaperStyles()
-
-				useDefaults = false
-				return;
 			}
-		})
-		// Default
-		if(useDefaults) {
-			this.SetDynamicBackgroundContainerBgProperty()
-			if(this.settings.enableDynamicEffect == true){
-				// dynamic effect
-				this.RemoveDynamicBackgroundEffect(this.preDynamicEffect)
-				this.AddDynamicBackgroundEffect(this.settings.dynamicEffect)
-				this.preDynamicEffect = this.settings.dynamicEffect
-			}
-
-			this.preBackgroundBlur = this.settings.blur
-			this.preBackgroundBrightness = this.settings.brightness
-			this.preBackgroundColor = this.settings.backgroundColor
-			this.preBackgroundBlending = this.settings.backgroundBlendMode
-			this.updateWallpaperStyles()
 		}
-
-
 	}
 
 
@@ -406,10 +401,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 					this.plugin.RemoveDynamicBackgroundEffect(this.plugin.preDynamicEffect);
 
 					if (this.plugin.settings.enableDynamicEffect == true) {
-						const file = this.app.workspace.getActiveFile()
-						if(file && (this.plugin.dynamicBackgroundContainer != undefined)){
-							this.plugin.setFileBackgroundData(file)
-						}
+						this.plugin.setFileBackgroundData()
 					}
 
 
@@ -451,9 +443,8 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						this.plugin.RemoveDynamicBackgroundEffect(this.plugin.settings.dynamicEffect);
 					}
 					else{
-						const file = this.app.workspace.getActiveFile()
-						if(file && (this.plugin.dynamicBackgroundContainer != undefined)){
-							this.plugin.setFileBackgroundData(file)
+						if(this.plugin.dynamicBackgroundContainer != undefined){
+							this.plugin.setFileBackgroundData()
 						} else {
 							this.plugin.AddDynamicBackgroundEffect(this.plugin.settings.dynamicEffect)
 						}
@@ -1388,6 +1379,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings()
 						this.plugin.saveData(this.plugin.settings)
 						this.display()
+						this.plugin.setFileBackgroundData()
 					} else if(!notePath) {
 						new Notice("No note path has been added")
 					}
