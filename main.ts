@@ -602,7 +602,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 							input: true,
 							clear: false,
 							cancel: false,
-							save: true,
+							save: false,
 						},
 					},
 				})
@@ -834,6 +834,7 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 
 				let colorHex;
 				let pickrCreate = new Pickr({
+					container: backgroundColorPickerSetting,
 					el: ".color-picker",
 					theme: "nano",
 					swatches: colorMap,
@@ -851,9 +852,9 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 						hsva: false,
 						cmyk: false,
 						input: true,
-						clear: true,
-						cancel: true,
-						save: true,
+						clear: false,
+						cancel: false,
+						save: false,
 						},
 					},
 				})
@@ -1204,15 +1205,15 @@ class DynamicBackgroundSettingTab extends PluginSettingTab {
 							opacity: true,
 							hue: true,
 							interaction: {
-							hex: true,
-							rgba: true,
-							hsla: false,
-							hsva: false,
-							cmyk: false,
-							input: true,
-							clear: true,
-							cancel: true,
-							save: true,
+								hex: true,
+								rgba: true,
+								hsla: false,
+								hsva: false,
+								cmyk: false,
+								input: true,
+								clear: false,
+								cancel: false,
+								save: false,
 							},
 						},
 					})
