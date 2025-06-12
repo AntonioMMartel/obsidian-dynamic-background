@@ -1,3 +1,11 @@
+declare global {
+  interface Window {
+      Obsidian_Dynamic_Background_Start: () => void;
+      Obsidian_Dynamic_Background_Firework: () => void;
+      Obsidian_Dynamic_Background_Animate: () => void;
+  }
+}
+
 export let DarkTheme_Random_Circle_Background_Property = "radial-gradient(ellipse at bottom, #1b2735 20%, #090a0f 100%)";
 
 // Add Random Circle dynamic background effect for dark theme
@@ -102,7 +110,7 @@ export function Remove_RandomCircle(dynamicBackgroundContainer: HTMLDivElement){
 
 function Unload_Effect_Script()
 {
-  window["Obsidian_Dynamic_Background_Start"] = null;
-  window["Obsidian_Dynamic_Background_Firework"] = null;
-  window["Obsidian_Dynamic_Background_Animate"] = null;
+  window["Obsidian_Dynamic_Background_Start"] = () => {};
+  window["Obsidian_Dynamic_Background_Firework"] = () => {};
+  window["Obsidian_Dynamic_Background_Animate"] = () => {};
 }
