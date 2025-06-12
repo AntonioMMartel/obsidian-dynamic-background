@@ -1,3 +1,12 @@
+declare global {
+  interface Window {
+      Obsidian_Dynamic_Background_Start: () => void;
+      Obsidian_Dynamic_Background_Draw: () => void;
+      Obsidian_Dynamic_Background_Clear: () => void;
+      Obsidian_Dynamic_Background_SetBrightness: () => void;
+  }
+}
+
 export let DarkTheme_Digital_Rain_Background_Property = "radial-gradient(ellipse at bottom, #1b2735 20%, #090a0f 100%)";
 
 // Add Digital Rain dynamic background effect for dark theme
@@ -85,10 +94,10 @@ export function Remove_DigitalRain(dynamicBackgroundContainer: HTMLDivElement){
 
 function Unload_Effect_Script()
 {  
-  window["Obsidian_Dynamic_Background_Start"] = null;
-  window["Obsidian_Dynamic_Background_Draw"] = null;
-  window["Obsidian_Dynamic_Background_Clear"] = null;
-  window["Obsidian_Dynamic_Background_SetBrightness"] = null;
+  window["Obsidian_Dynamic_Background_Start"] = () => {};
+  window["Obsidian_Dynamic_Background_Draw"] = () => {};
+  window["Obsidian_Dynamic_Background_Clear"] = () => {};
+  window["Obsidian_Dynamic_Background_SetBrightness"] = () => {};
 }
 
 function CallClear(dynamicBackgroundContainer: HTMLDivElement){

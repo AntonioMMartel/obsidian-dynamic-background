@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+      Obsidian_Dynamic_Background_ShowWave: () => void;
+  }
+}
+
 export let LightTheme_Wave_Background_Property = "linear-gradient(0deg, rgba(255,255,255,1) 60%, rgba(201,233,255,1) 100%)";
 
 // Add Wave dynamic background effect for light theme
@@ -45,5 +51,5 @@ export function Remove_Wave_Light(dynamicBackgroundContainer: HTMLDivElement){
 }
 
 function Unload_Effect_Script(){
-  window["Obsidian_Dynamic_Background_ShowWave"] = null;
+  window["Obsidian_Dynamic_Background_ShowWave"] = () => {};
 }
